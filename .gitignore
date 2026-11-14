@@ -26,5 +26,5 @@ private/
 .DS_Store
 Thumbs.db
 
-# Documentation
-docs/
+# Internal planning and research (Portuguese, not published)
+docs/internal/
