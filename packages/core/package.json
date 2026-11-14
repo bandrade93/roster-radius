@@ -1,9 +1,17 @@
 {
   "name": "@roster-radius/core",
   "version": "0.0.1",
-  "description": "",
-  "keywords": [],
-  "author": "",
+  "description": "RosterRadius exposure engine: field catalog, inventory and roster readers, exposure calculation and findings.",
+  "keywords": [
+    "k12",
+    "student-privacy",
+    "student-data",
+    "oneroster",
+    "edtech",
+    "data-minimization",
+    "vendor-risk"
+  ],
+  "author": "Bruno Persona Negrão de Andrade",
   "license": "Apache-2.0",
   "type": "module"
 }

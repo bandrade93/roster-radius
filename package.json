@@ -1,12 +1,20 @@
 {
   "name": "roster-radius",
-  "description": "",
+  "description": "RosterRadius: open-source tool that maps which vendors receive which student data in U.S. K-12 school districts and measures each vendor's exposure.",
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "k12",
+    "student-privacy",
+    "student-data",
+    "oneroster",
+    "edtech",
+    "data-minimization",
+    "vendor-risk"
+  ],
+  "author": "Bruno Persona Negrão de Andrade",
   "license": "Apache-2.0",
   "type": "module",
   "private": true,
