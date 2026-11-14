@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build and test output
+dist/
+coverage/
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment and secrets: never commit these
+.env
+.env.*
+!.env.example
+
+# Real district data never enters this repository.
+# Keep local inputs in private/ (ignored); use synthetic data for tests and examples.
+private/
+
+# Editors and OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Documentation
+docs/
