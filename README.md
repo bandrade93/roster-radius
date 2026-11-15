@@ -1,5 +1,7 @@
 # RosterRadius
 
+[![CI](https://github.com/bandrade93/roster-radius/actions/workflows/ci.yml/badge.svg)](https://github.com/bandrade93/roster-radius/actions/workflows/ci.yml)
+
 **Which vendors receive which student data, and how many students would each one expose in a breach?**
 
 RosterRadius is an open-source tool for U.S. K-12 school districts, built first for small and rural districts that have no dedicated security team. It reads the files a district already has and answers, in plain language, which vendors hold which kinds of student data and how large each vendor's *exposure radius* is.
@@ -38,7 +40,7 @@ docs/
 
 ## Development
 
-Requires Node.js 20 or later.
+Requires Node.js 22 or later (every Node.js line with upstream support is tested in CI).
 
 ```bash
 npm install
