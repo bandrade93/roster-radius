@@ -3,8 +3,8 @@
  *
  * The weight says how much harm the exposure of one field can cause to one
  * person, on a 1 to 5 scale. It is the "data field sensitivity" factor of
- * NIST SP 800-122; the number of people exposed and the vendor factor are
- * applied separately by the exposure formula.
+ * NIST SP 800-122; the number of people exposed is applied separately by the
+ * exposure formula (`exposure/formula.ts`).
  *
  * These weights are a starting hypothesis, to be validated with district
  * technology leaders and privacy experts (methodology task 1.2.9). Districts

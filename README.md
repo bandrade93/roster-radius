@@ -29,13 +29,18 @@ Districts share student data with dozens of technology vendors through several c
 4. **Every number is traceable** to the input file and the rule that produced it.
 5. **Built for non-specialists.** A district technology director without security training must be able to read the results.
 
+## Methodology
+
+How fields are classified, how exposure is calculated and which rules raise alerts is documented in [METHODOLOGY.md](METHODOLOGY.md), with its [limitations](docs/methodology/limitations.md). It is a draft open for review.
+
 ## Project structure
 
 ```
 packages/
   core/     the exposure engine (in progress)
 docs/
-  adr/      architecture decision records
+  adr/          architecture decision records
+  methodology/  limitations, federal legal basis and state law table
 ```
 
 ## Development
