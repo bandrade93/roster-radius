@@ -160,7 +160,7 @@ Passwords are never expected. They raise the password alert only, not a second "
 
 ### 7.2 Contracts
 
-A contract record lists the Exhibit B categories the agreement allows, the apps it covers (or all apps of the vendor) and its end date. The comparison runs from the flow to the contract: every student or guardian field that flows must belong to an allowed category. A contract that allows more than what flows does not raise an alert. Staff fields are not compared, because Exhibit B lists student data.
+A contract record lists the Exhibit B categories the agreement allows as a whole, any individual fields it allows (when the agreement marks single data elements rather than whole categories), the apps it covers (or all apps of the vendor) and its end date. The format is described in [docs/formats/contracts.md](docs/formats/contracts.md). The comparison runs from the flow to the contract: every student or guardian field that flows must be allowed, by its category or by name. A contract that records only dates is checked for expiry, but its fields are not compared. A contract that allows more than what flows does not raise an alert. Staff fields are not compared, because Exhibit B lists student data.
 
 When several contracts cover an app, the categories allowed by those still in force are combined, and the app stays covered until the last of them ends.
 

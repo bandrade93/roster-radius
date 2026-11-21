@@ -37,10 +37,14 @@ How fields are classified, how exposure is calculated and which rules raise aler
 
 ```
 packages/
-  core/     the exposure engine (in progress)
+  core/         the exposure engine (in progress)
 docs/
   adr/          architecture decision records
+  formats/      input file formats: app inventory and contracts
   methodology/  limitations, federal legal basis and state law table
+examples/
+  synthetic-district/  a complete fictional district for trying the tool
+scripts/        development scripts (npm run synthetic)
 ```
 
 ## Development

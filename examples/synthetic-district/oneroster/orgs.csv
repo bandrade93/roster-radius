@@ -1,0 +1,6 @@
+sourcedId,status,dateLastModified,name,type,identifier,parentSourcedId
+org-dist-01,,,Synthetic Unified School District,district,D-001,
+org-sch-01,,,Synthetic Elementary North,school,S-001,org-dist-01
+org-sch-02,,,Synthetic Elementary South,school,S-002,org-dist-01
+org-sch-03,,,Synthetic Middle School,school,S-003,org-dist-01
+org-sch-04,,,Synthetic High School,school,S-004,org-dist-01

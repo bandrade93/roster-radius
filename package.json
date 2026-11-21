@@ -3,7 +3,8 @@
   "description": "RosterRadius: open-source tool that maps which vendors receive which student data in U.S. K-12 school districts and measures each vendor's exposure.",
   "scripts": {
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "synthetic": "tsx scripts/generate-synthetic.ts"
   },
   "keywords": [
     "k12",

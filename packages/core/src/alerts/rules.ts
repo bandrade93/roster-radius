@@ -1,4 +1,5 @@
-import { getField, type ExhibitBCategory, type FieldKey } from '../catalog/index.js';
+import { getField, type FieldKey } from '../catalog/index.js';
+import { recordsAllowedData, type Contract } from '../contracts/types.js';
 import { SENSITIVITY_CLASSES } from '../catalog/sensitivity.js';
 import { fieldNeed, type AppCategory } from '../baselines/index.js';
 import { exposureWithIds, type PeopleScope, type ResolvedFlow } from '../exposure/formula.js';
@@ -17,7 +18,7 @@ import { exposureWithIds, type PeopleScope, type ResolvedFlow } from '../exposur
  * | unexpected_field  | high/medium | A field the app's category does not need (high if weight >= 4) |
  * | no_contract       | high        | An app receives student data and no contract covers it       |
  * | contract_expired  | high        | Every contract covering the app has expired, data still flows |
- * | contract_mismatch | high/medium | A field's Exhibit B category is not authorized by the contract |
+ * | contract_mismatch | high/medium | A field's Exhibit B category is not authorized by the contract (when recorded) |
  * | review_field      | info        | A sensitive field the category uses only sometimes            |
  * | contract_expiring | info        | The contract covering the app expires soon                    |
  * | unclassified_app  | info        | The app has no category, so unnecessary data is not checked   |
@@ -42,18 +43,6 @@ export type AlertRule = (typeof ALERT_RULES)[number];
 /** Most severe first. */
 export const SEVERITIES = ['critical', 'high', 'medium', 'info'] as const;
 export type Severity = (typeof SEVERITIES)[number];
-
-/** A data privacy agreement, such as the NDPA, as recorded by the district. */
-export interface Contract {
-  readonly id: string;
-  readonly vendorId: string;
-  /** Apps covered. Omit when the contract covers every app of the vendor. */
-  readonly appIds?: readonly string[];
-  /** Data categories authorized in Exhibit B. */
-  readonly exhibitB: readonly ExhibitBCategory[];
-  /** Last day the contract is in force, as YYYY-MM-DD. Omit when it has no end date. */
-  readonly expiresOn?: string;
-}
 
 export interface AlertInput {
   readonly flows: readonly ResolvedFlow[];
@@ -199,11 +188,17 @@ function contractAlerts(appId: string, flows: readonly ResolvedFlow[], input: Al
   }
 
   const alerts: Alert[] = [];
-  const authorized = new Set(active.flatMap((c) => c.exhibitB));
-  const outside = studentFields.filter((k) => {
-    const category = getField(k)!.exhibitB;
-    return category !== null && !authorized.has(category);
-  });
+  // Compare fields only when every contract in force records what it allows.
+  const recorded = active.every(recordsAllowedData);
+  const categories = new Set(active.flatMap((c) => c.exhibitB ?? []));
+  const allowedFields = new Set(active.flatMap((c) => c.fields ?? []));
+  const outside = !recorded
+    ? []
+    : studentFields.filter((k) => {
+        if (allowedFields.has(k)) return false;
+        const category = getField(k)!.exhibitB;
+        return category !== null && !categories.has(category);
+      });
   if (outside.length > 0) {
     const categories = [...new Set(outside.map((k) => getField(k)!.exhibitB))].join(', ');
     alerts.push({

@@ -1,0 +1,9 @@
+app,vendor,channel,fields,category,channel_id,students,staff,schools,grades,contract_end,deletion_days,notes
+ReadWell,Acme Learning,clever,student.sis_id|student.first_name|student.last_name|student.grade_level|student.school|student.birth_date|student.iep_status|staff.id|staff.first_name|staff.last_name|staff.email,instructional_content,,all,teachers,,KG|01|02|03|04|05,,,Elementary reading
+MathPath,Acme Learning,sftp,file:exports/mathpath_students.csv,instructional_content,,all,,Synthetic Middle School,,,,Nightly SFTP export
+LunchLine,Food Services Co,sftp,student.sis_id|student.student_number|student.first_name|student.last_name|student.school|student.grade_level|student.frl_status,nutrition,,all,,,,,,Cafeteria point of sale
+QuizHub,QuizHub Inc,clever,student.first_name|student.last_name|student.email,,,file:clever/quizhub/students.csv,,,,,,Teacher-requested app
+FamilyTalk,Family Messaging LLC,manual_upload,student.first_name|student.last_name|guardian.name|guardian.phone|guardian.email|student.home_language,family_communication,,count:1600,,,,,,Uploaded by the front office
+ClassCloud,Classroom Cloud Inc,clever,student.sis_id|student.first_name|student.last_name|student.email|student.grade_level|student.class_enrollments|staff.id|staff.first_name|staff.last_name|staff.email,learning_management,,all,teachers,Synthetic Middle School|Synthetic High School,,,,Secondary LMS
+ShelfScan,Library Systems Co,sftp,student.sis_id|student.first_name|student.last_name|student.username|student.password|student.school,library,,all,,,,,,Library circulation
+RouteRider,Transit Apps LLC,sftp,student.sis_id|student.first_name|student.last_name|student.address|student.transportation|student.school,transportation,,all,,,,2027-08-15,90,Bus routing

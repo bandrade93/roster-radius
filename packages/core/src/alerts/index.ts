@@ -5,6 +5,5 @@ export {
   type Alert,
   type AlertInput,
   type AlertRule,
-  type Contract,
   type Severity,
 } from './rules.js';

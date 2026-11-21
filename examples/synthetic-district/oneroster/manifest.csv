@@ -1,0 +1,7 @@
+propertyName,value
+manifest.version,1.0
+oneroster.version,1.1
+file.orgs,bulk
+file.users,bulk
+file.demographics,bulk
+source.systemName,Synthetic SIS

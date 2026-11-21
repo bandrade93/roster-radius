@@ -1,0 +1,6 @@
+contract_id,vendor,apps,exhibit_b,fields,end_date,deletion_days,agreement,source,notes
+ACME-2025,Acme Learning,,Student Name|Student Identifiers|Enrollment|Student In App Performance,student.birth_date,2027-06-30,60,ndpa,,Covers every Acme app
+FOOD-2023,Food Services Co,LunchLine,Student Name|Student Identifiers|Enrollment|Special Indicator,,2026-06-30,30,state_dpa,,Renewal pending
+QUIZ-TOS,QuizHub Inc,QuizHub,,,,,vendor_terms,,Click-through terms
+CLOUD-2024,Classroom Cloud Inc,,Student Name|Student Identifiers|Enrollment|Schedule|Student Contact Information|Student Work,,2026-12-31,60,ndpa,,Up for renewal
+SHELF-2025,Library Systems Co,,Student Name|Student Identifiers|Enrollment,,2028-06-30,30,ndpa,,

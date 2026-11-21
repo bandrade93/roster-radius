@@ -138,6 +138,13 @@ describe('contract alerts', () => {
     expect(find(alerts, 'no_contract', 'reading')).toBeUndefined();
   });
 
+  it('skips the field comparison when Exhibit B was not recorded', () => {
+    const datesOnly: Contract = { id: 'C9', vendorId: 'acme', expiresOn: '2027-06-30' };
+    const alerts = evaluateAlerts({ ...input, contracts: [datesOnly, foodContract] });
+    expect(find(alerts, 'contract_mismatch', 'reading')).toBeUndefined();
+    expect(find(alerts, 'no_contract', 'reading')).toBeUndefined();
+  });
+
   it('rejects invalid dates', () => {
     expect(() => evaluateAlerts({ ...input, today: '17/11/2026' })).toThrow(RangeError);
   });

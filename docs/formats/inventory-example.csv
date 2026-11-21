@@ -1,0 +1,6 @@
+app,vendor,channel,fields,category,channel_id,students,staff,schools,grades,contract_end,deletion_days,notes
+ReadWell,Acme Learning,clever,student.sis_id|student.first_name|student.last_name|student.grade_level|student.school|student.birth_date|staff.id|staff.first_name|staff.last_name|staff.email,instructional_content,,all,teachers,,KG|01|02|03|04|05,2027-06-30,60,Elementary reading
+MathPath,Acme Learning,sftp,file:exports/mathpath_students.csv,instructional_content,,all,,Lincoln Middle|Roosevelt Middle,,2027-06-30,60,Nightly SFTP export to the vendor
+LunchLine,Food Services Co,sftp,student.sis_id|student.student_number|student.first_name|student.last_name|student.school|student.grade_level|student.frl_status,nutrition,,all,,,,2026-06-30,30,Cafeteria point of sale
+QuizHub,QuizHub Inc,clever,student.first_name|student.last_name|student.email,,,file:clever/quizhub/students.csv,,,,,,Teacher-requested app
+FamilyTalk,Family Messaging LLC,manual_upload,student.first_name|student.last_name|guardian.name|guardian.phone|guardian.email|student.home_language,family_communication,,count:1700,,,,2027-12-31,90,Uploaded by the front office twice a year
