@@ -22,12 +22,12 @@ A report must be read with this page. Each limitation says whether it can make a
 *Effect:* underestimate for long-standing vendors; overestimate if a vendor already deleted data.
 
 **1.6 Data shared onward is not followed.** Vendors pass data to subprocessors such as hosting, analytics and AI providers. v0.1 does not follow it.
-*Effect:* underestimate. *What we do:* a subprocessor column in the inventory, with AI providers marked, is planned for v0.1; counting their exposure is planned for v0.2.
+*Effect:* underestimate. *What we do:* the inventory has a subprocessor column, with AI providers marked, and the report lists them for each vendor. Counting the students whose data reaches them is planned for v0.2.
 
 ## 2. Counting people
 
 **2.1 People are matched by identifier.** A student who reaches the same vendor through two channels is counted once only if both channels use the same student identifier. If one channel uses the SIS ID and another the state ID, the student is counted twice.
-*Effect:* overestimate of people and points for vendors with several channels. *What we do:* reports state which identifier was used for each source.
+*Effect:* overestimate of people and points for vendors with several channels. *What we do:* a file that lists students is matched to the OneRoster export by both its `sourcedId` and its `identifier` column, which often holds the district's own ID, and the one that matches more students is used. IDs found in neither are counted as separate people and reported, and reports state which identifier was used for each source.
 
 **2.2 Some sources give only a count.** When a flow gives the number of students but not their identifiers, overlap with other flows cannot be removed.
 *Effect:* range. *What we do:* the result is shown as a range from full overlap to no overlap, and marked as not exact.
@@ -51,6 +51,9 @@ A report must be read with this page. Each limitation says whether it can make a
 **3.4 Staff use the same weights as students.** Some staff data, such as a work email address, is often public on the school's website.
 *Effect:* possible overestimate of staff exposure. Staff exposure is always reported separately and never added to student exposure.
 
+**3.5 A reduction simulation shows the score after deletion.** Stopping a field changes what is sent from then on. The vendor still holds what it already received until it deletes it, so the lower score is reached only after the district asks for deletion and the vendor confirms it.
+*Effect:* overestimate of the immediate benefit of a cut. *What we do:* the methodology says so where it describes the simulation.
+
 ## 4. What an app needs
 
 **4.1 The category baselines are a hypothesis.** "Unnecessary data" alerts compare each app with what its category usually needs. The baselines were kept conservative to avoid false alarms, and they still have to be reviewed with district technology leaders.
@@ -62,7 +65,7 @@ A report must be read with this page. Each limitation says whether it can make a
 
 **4.4 The district's student information system is not checked.** It holds all fields by design.
 
-## 5. Contracts
+## 5. Contracts and the published list
 
 **5.1 Contract terms are entered by hand.** The district records the Exhibit B categories and the end date of each agreement.
 *Effect:* alerts are only as good as that record.
@@ -72,6 +75,10 @@ A report must be read with this page. Each limitation says whether it can make a
 **5.3 Only student and guardian data is compared.** Exhibit B lists student data, so staff fields are not compared with the contract.
 
 **5.4 A contract that allows more than what flows is not an alert.** The tool compares what flows with what is allowed, not the other way around.
+
+**5.5 The published list is translated by hand.** Districts describe the data they share in plain language, each in their own way. The district translates its publication into Exhibit B categories and fields, and the comparison with what flows is only as good as that translation. A vendor named without its data counts as disclosed but is not compared.
+
+**5.6 The published list is compared like a contract.** Only student and guardian data is compared, and a publication that lists more than what flows is not a finding.
 
 ## 6. Incident scenarios
 
@@ -97,5 +104,6 @@ A report must be read with this page. Each limitation says whether it can make a
 | Undocumented channels (1.1) | Different identifiers across channels (2.1) | Flows with counts only (2.2) |
 | Data created inside the app (1.4) | Staff weights (3.4) | |
 | Data kept from previous years (1.5) | Worst-case incident scenarios (6.1) | |
+| | Immediate effect of a reduction (3.5) | |
 | Subprocessors (1.6) | | |
 | Combinations of fields (3.2) | | |

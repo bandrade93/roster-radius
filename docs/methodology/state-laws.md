@@ -35,8 +35,9 @@ Under C.R.S. 24-73-103, "personal information" includes a first name or first in
 
 ## How RosterRadius uses it
 
-- **Deadlines** with a fixed number of days are counted in calendar days from the date the district enters (for example, the day it received the vendor's notice). Deadlines without a number ("as soon as possible", "within a reasonable time") are shown as text.
-- **Disclosure versus flow** applies to the publications marked as describing data elements: Illinois 27(a)(1), and Colorado 22-16-107(1)(a) and 22-16-108(1). The comparison rule will be specified in the methodology before v0.1.
+- **Deadlines** of the district with a fixed number of days are counted in calendar days from the date the district enters (the day it received the vendor's notice or determined the breach). The vendor's duties, and deadlines without a number ("as soon as possible", "within a reasonable time"), are shown as text.
+- **State rules** are applied to the incident: in Illinois, whether it reaches 10% of enrollment, which requires listing it publicly; in Colorado, whether the data includes names with student ID numbers, or usernames or emails with passwords, which the breach law treats as personal information.
+- **Disclosure versus flow** applies to the publications marked as describing data elements: Illinois 27(a)(1), and Colorado 22-16-107(1)(a) and 22-16-108(1). The comparison is described in the [methodology, section 7.3](../../METHODOLOGY.md#73-disclosure-versus-flow).
 - The tool does not decide whether a law applies to a given incident or whether a district complies. It shows the duties so the district and its counsel can decide.
 
 ## Sources

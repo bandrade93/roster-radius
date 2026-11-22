@@ -11,6 +11,7 @@ export {
   type WeightOverrides,
 } from './formula.js';
 export {
+  flowsInScope,
   incidentImpact,
   incidentScenarios,
   type IncidentImpact,

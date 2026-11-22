@@ -42,6 +42,18 @@ The tool starts from files the district already has or can fill in. The choice o
 
 Each input is resolved into **flows**. A flow says that one app, of one vendor, receives a set of fields about a set of people through one channel. People are given by their identifiers (read in memory only) or, when a source gives no identifiers, only by a count.
 
+### 3.1 Traceability
+
+Every report can be traced back to its inputs and rules:
+
+- **Inputs.** The report lists every file it read, with its SHA-256 hash and size. The hash matches `sha256sum` (or `Get-FileHash -Algorithm SHA256` on Windows) for a UTF-8 file without a byte order mark. Inside a OneRoster zip, the bytes of each file are hashed. A tool that reads the files itself can pass hashes of their bytes instead.
+- **Lines.** Each flow keeps the inventory line it comes from. Exposure results, alerts, incident reports and disclosure findings list the inventory lines they are computed from. Contract alerts also name the contract, and disclosure findings the lines of the declared list.
+- **Measured or entered.** Each flow says whether its fields were read from a file the vendor receives (measured) or typed into the inventory (entered), and whether its people were taken from the roster or counted in a file (measured) or typed as a count (entered).
+- **Identifiers.** Each flow says how its people were matched to the roster: by OneRoster `sourcedId` for roster selections, and by `sourcedId` or `identifier` for files, with the file's ID column and the number of IDs that matched neither.
+- **Rules and weights.** Each alert and finding names its rule. Every report states the methodology version and the weights used.
+
+The report never contains student or staff identifiers. Hashes identify the files, not the people in them.
+
 ## 4. Field catalog
 
 The [field catalog](packages/core/src/catalog/fields.ts) lists 82 facts that can be shared, each with a stable key: 46 about students, 5 about guardians, 16 about staff, 6 about schools and 9 about sections. Examples: `student.birth_date`, `guardian.phone`, `staff.email`.
@@ -103,7 +115,7 @@ A flow that carries fields of a population without saying which people it reache
 
 ### 6.3 Flows with counts only
 
-When a flow gives only the number of people, it cannot be matched with other flows. The result is then a range: the minimum assumes full overlap with the other flows, the maximum assumes none. Results with a range are marked as not exact.
+When a flow gives only the number of people, it cannot be matched with other flows. The result is then a range: the minimum assumes full overlap with the other flows, the maximum assumes none, and never goes beyond the district's enrollment (or staff size). Results with a range are marked as not exact.
 
 ### 6.4 Worked example
 
@@ -122,6 +134,22 @@ Students 901 to 1,200 are in both apps. For them, the vendor holds the union of 
 | **Vendor, per the formula** | **1,700** | 900 × 12 + 500 × 16 + 300 × 22 = **25,400** |
 
 In plain language: *1,700 students; 1,200 with date of birth; 800 with meal eligibility and home address.* The 300 students in both apps are the most exposed: this vendor holds their birth date and home address together.
+
+### 6.5 Reduction simulation
+
+Implemented in [`reduction/simulate.ts`](packages/core/src/reduction/simulate.ts).
+
+A simulation asks how much exposure would fall if the district stopped sending some fields. A cut names the fields and where they stop: one app, every app of a vendor, one channel, or every flow. The tool removes them from those flows and runs the formula again. It gives, for students and staff separately:
+
+- for each vendor that changes, the score and the number of people before and after, and the drop;
+- the district total, which is the sum of the vendors' scores, because each vendor is a separate place where data can be breached;
+- the people for whom a cut field still reaches the same vendor through another app or channel.
+
+The last point follows from counting each person once. In the worked example above, stopping meal eligibility and home address in the math app lowers the vendor's score by 800 × 10 = 8,000, from 25,400 to 17,400 (31%). Stopping first name in the math app lowers it by only 500 × 3 = 1,500: the 300 students in both apps still send their first name through the reading app, and the simulation lists them. To remove a field from a vendor, the cut must cover every app that sends it.
+
+A cut that matches no flow, or a field the flows in its scope do not carry, changes nothing and is reported.
+
+A cut changes what is sent from then on. The vendor still holds what it already received, so the lower score is reached only after the district asks the vendor to delete those fields and the vendor confirms it ([limitation 3.5](docs/methodology/limitations.md)).
 
 ## 7. Alerts
 
@@ -164,6 +192,23 @@ A contract record lists the Exhibit B categories the agreement allows as a whole
 
 When several contracts cover an app, the categories allowed by those still in force are combined, and the app stays covered until the last of them ends.
 
+### 7.3 Disclosure versus flow
+
+Implemented in [`disclosure/compare.ts`](packages/core/src/disclosure/compare.ts).
+
+Illinois and Colorado require districts to publish which vendors receive student data and which data each one receives (see the [state law table](docs/methodology/state-laws.md)). When the district provides what it published, as a [declared list](docs/formats/declared.md), the tool compares it with what flows and reports:
+
+| Finding | Severity | Meaning |
+|---|---|---|
+| Vendor not disclosed | high | A vendor receives student data and the publication does not name it |
+| App not disclosed | high | The publication names the vendor, but only for other apps |
+| Data not disclosed | high or medium | An app receives data that the entries covering it do not list, by Exhibit B category or by field. High when a field weighs 4 or more |
+| No longer receives data | info | The publication names a vendor or app that no longer receives student data |
+
+Each finding gives the students whose undisclosed data flows, counted once, with the formula of section 6. As for contracts, only student and guardian data is compared, and only in one direction: a publication that lists more than what flows is not a finding. A vendor named without its data counts as disclosed, but its data is not compared, and the report says so.
+
+The comparison is only as good as the translation of the publication into categories and fields, which the district does by hand in v0.1.
+
 ## 8. Incident scenarios
 
 Implemented in [`exposure/incident.ts`](packages/core/src/exposure/incident.ts). A scenario asks: if this part of the data flow were breached, who would be affected, and with which data? It applies the exposure formula to the flows inside the breached scope, for students and staff separately.
@@ -174,7 +219,14 @@ Implemented in [`exposure/incident.ts`](packages/core/src/exposure/incident.ts).
 | App | The data of one app |
 | Channel | Everything that passes through the channel, such as a rostering platform or the district's SFTP account, across all vendors |
 
-Each scenario assumes the worst case: that every field received inside the scope was taken. A district can rank every vendor and channel this way, to see which single breach would affect its students the most. In an incident, the scenario also gives the identifiers of the people affected, in memory, to prepare notifications.
+Each scenario assumes the worst case: that every field received inside the scope was taken. A district can rank every vendor and channel this way, to see which single breach would affect its students the most. A channel used by one vendor only, and for all of its apps, is the same breach as that vendor and is listed once, as the vendor. In an incident, the district enters the date it was notified and its state. The incident report, implemented in [`incident/report.ts`](packages/core/src/incident/report.ts), then gives:
+
+- the students and staff affected, counted once, by kind of data and by field, with the apps each field came through;
+- the district's deadlines under its state's law, with their last day, and the vendor's duties as text;
+- the state rules that apply to this incident: in Illinois, whether the breach reaches the 10% of enrollment that requires listing it publicly; in Colorado, whether the data includes what the state breach law treats as personal information;
+- a notification list, built on the district's computer: one row per affected person with their OneRoster and district IDs and the kinds of data the vendor held. It has no names or contacts; the district joins it with its own system. People known only by a count are reported but cannot be listed.
+
+An incident whose vendor, app or channel is not in the inventory is an error, with the closest name suggested. It is never reported as an incident with nobody affected.
 
 ## 9. Legal basis
 
@@ -188,9 +240,7 @@ The methodology rests on two layers of law. Neither is legal advice: the tool do
 
 These parts will be specified here before the v0.1 release:
 
-- **Disclosure versus flow:** compare what the district published about the data it shares, as Illinois and Colorado require, with what actually flows.
 - **More states:** New York, Connecticut and Utah also require districts to publish information about vendors that receive student data.
-- **Reduction simulation:** how much exposure falls if a field stops being shared. It follows directly from the formula in section 6.
 
 ## 11. Review and changes
 

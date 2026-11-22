@@ -36,10 +36,11 @@ When an item could mean more than one thing, choose the narrower reading and say
 
 ## How the declared list is used
 
-The comparison with what flows (methodology, "disclosure versus flow") is planned for v0.1 and will report:
+The analysis compares the declared list with what flows (methodology, section 7.3) and reports:
 
 - **vendors that receive student data but are not in the publication;**
-- **data that flows but the publication does not list** for that vendor or app, whether by its category or by name;
+- **apps the publication leaves out** for a vendor it names only for other apps;
+- **data that flows but the publication does not list** for that vendor or app, whether by its category or by name, with the number of students whose data it is;
 - **vendors in the publication that no longer receive data**, so the district can update its page.
 
-As for contracts, only student and guardian data is compared.
+As for contracts, only student and guardian data is compared, and only in one direction: a publication that lists more than what flows is not a finding.

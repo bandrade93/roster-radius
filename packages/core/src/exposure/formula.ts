@@ -41,6 +41,8 @@ export interface ResolvedFlow {
   readonly students?: PeopleScope;
   /** Staff reached. Omit when the flow carries no staff records. */
   readonly staff?: PeopleScope;
+  /** The inventory line the flow comes from, so results can point back to it. */
+  readonly line?: number;
 }
 
 /** Replaces the default weight of some classes; reports must state the weights used. */
@@ -79,12 +81,20 @@ export interface ExposureResult {
    * result is incomplete and the report must say so.
    */
   readonly flowsWithoutScope: number;
+  /** Inventory lines of the flows counted in this result, sorted. */
+  readonly lines: readonly number[];
 }
 
 export interface ExposureOptions {
   /** Default: students. */
   readonly population?: Population;
   readonly weights?: WeightOverrides;
+  /**
+   * How many people the population has, when known (the district's
+   * enrollment). The upper end of a range never goes beyond it: flows given
+   * only as a count still reach people of the same district.
+   */
+  readonly maxPeople?: number;
 }
 
 const CLASSES = Object.keys(SENSITIVITY_CLASSES) as SensitivityClass[];
@@ -124,6 +134,7 @@ function computeGroup(
   flows: readonly ResolvedFlow[],
   population: Population,
   weights: Record<SensitivityClass, number>,
+  maxPeople?: number,
 ): { result: ExposureResult; ids: ReadonlySet<string> } {
   const isCounted = (key: FieldKey): boolean => PREFIXES[population].some((p) => key.startsWith(p));
   const scopeOf = (flow: ResolvedFlow): PeopleScope | undefined =>
@@ -141,6 +152,7 @@ function computeGroup(
   const counted = new Set<FieldKey>();
   const ignored = new Set<FieldKey>();
   let flowsWithoutScope = 0;
+  const lines = new Set<number>();
   const fieldsByPerson = new Map<string, Set<FieldKey>>();
   const countFlows: { count: number; fields: readonly FieldKey[] }[] = [];
 
@@ -154,6 +166,7 @@ function computeGroup(
       continue;
     }
     for (const key of own) counted.add(key);
+    if (flow.line !== undefined) lines.add(flow.line);
     if (isIdSet(scope)) {
       // Exact part: merge fields per person.
       for (const person of scope) {
@@ -184,16 +197,20 @@ function computeGroup(
           exact: false,
         };
 
-  const people = range(
-    fieldsByPerson.size,
-    countFlows.map((f) => f.count),
+  // People can never exceed the population; points stay an upper bound.
+  const cap = (r: Range): Range => (r.exact || maxPeople === undefined || maxPeople <= 0 ? r : { ...r, max: Math.max(r.min, Math.min(r.max, maxPeople)) });
+  const people = cap(
+    range(
+      fieldsByPerson.size,
+      countFlows.map((f) => f.count),
+    ),
   );
   const points = range(
     exactPoints,
     countFlows.map((f) => f.count * weightOf(f.fields)),
   );
   const peopleByClass = Object.fromEntries(
-    CLASSES.map((c) => [c, range(exactByClass[c], countFlows.map((f) => (hasClass(f.fields, c) ? f.count : 0)))]),
+    CLASSES.map((c) => [c, cap(range(exactByClass[c], countFlows.map((f) => (hasClass(f.fields, c) ? f.count : 0))))]),
   ) as Record<SensitivityClass, Range>;
 
   // Highest weight wins; ties go to the class listed first in SENSITIVITY_CLASSES.
@@ -213,6 +230,7 @@ function computeGroup(
     ignoredFields: [...ignored].sort((a, b) => a.localeCompare(b)),
     topClass,
     flowsWithoutScope,
+    lines: [...lines].sort((a, b) => a - b),
   };
   return { result, ids: new Set(fieldsByPerson.keys()) };
 }
@@ -227,7 +245,7 @@ export function exposureWithIds(
   flows: readonly ResolvedFlow[],
   options: ExposureOptions = {},
 ): { result: ExposureResult; ids: ReadonlySet<string> } {
-  return computeGroup(id, flows, options.population ?? 'students', resolveWeights(options.weights));
+  return computeGroup(id, flows, options.population ?? 'students', resolveWeights(options.weights), options.maxPeople);
 }
 
 function byGroup(flows: readonly ResolvedFlow[], keyOf: (f: ResolvedFlow) => string, options: ExposureOptions): ExposureResult[] {
@@ -241,7 +259,7 @@ function byGroup(flows: readonly ResolvedFlow[], keyOf: (f: ResolvedFlow) => str
     else groups.set(key, [flow]);
   }
   return [...groups.entries()]
-    .map(([id, group]) => computeGroup(id, group, population, weights).result)
+    .map(([id, group]) => computeGroup(id, group, population, weights, options.maxPeople).result)
     .sort((a, b) => b.points.max - a.points.max || a.id.localeCompare(b.id));
 }
 

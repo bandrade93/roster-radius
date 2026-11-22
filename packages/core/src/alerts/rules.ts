@@ -71,6 +71,8 @@ export interface Alert {
   readonly staff: number;
   /** Plain-language explanation for the report. */
   readonly message: string;
+  /** Inventory lines of the flows the alert is about, sorted. */
+  readonly lines: readonly number[];
 }
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -91,7 +93,7 @@ const sizeOf = (scope: PeopleScope | undefined): number =>
 const list = (keys: readonly FieldKey[]): string => keys.map((k) => getField(k)!.label).join(', ');
 
 function flowAlerts(flow: ResolvedFlow, category: AppCategory | undefined): Alert[] {
-  const base = { vendorId: flow.vendorId, appId: flow.appId, channel: flow.channel };
+  const base = { vendorId: flow.vendorId, appId: flow.appId, channel: flow.channel, lines: flow.line !== undefined ? [flow.line] : [] };
   const affected = (fields: readonly FieldKey[]) => ({
     students: fields.some(isStudentField) ? sizeOf(flow.students) : 0,
     staff: fields.some(isStaffField) ? sizeOf(flow.staff) : 0,
@@ -116,8 +118,7 @@ function flowAlerts(flow: ResolvedFlow, category: AppCategory | undefined): Aler
       rule: 'unclassified_app',
       severity: 'info',
       fields: [],
-      students: 0,
-      staff: 0,
+      ...affected(flow.fields),
       message: `${flow.appId} has no category, so unnecessary data was not checked. Assign a category.`,
     });
     return alerts;
@@ -156,7 +157,8 @@ function contractAlerts(appId: string, flows: readonly ResolvedFlow[], input: Al
   if (studentFields.length === 0) return [];
 
   const students = exposureWithIds(appId, flows, { population: 'students' }).result.people.max;
-  const base = { vendorId, appId, students, staff: 0 };
+  const lines = [...new Set(flows.filter((f) => f.fields.some(isStudentField) && f.line !== undefined).map((f) => f.line!))].sort((a, b) => a - b);
+  const base = { vendorId, appId, students, staff: 0, lines };
   const today = toDay(input.today, 'today');
   const covering = input.contracts.filter((c) => c.vendorId === vendorId && (!c.appIds || c.appIds.includes(appId)));
 

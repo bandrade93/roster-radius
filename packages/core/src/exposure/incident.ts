@@ -46,6 +46,9 @@ export interface IncidentImpact {
 
 export interface IncidentOptions {
   readonly weights?: WeightOverrides;
+  /** Enrollment and staff size, when known: ranges never go beyond them. */
+  readonly maxStudents?: number;
+  readonly maxStaff?: number;
 }
 
 function scopeId(scope: IncidentScope): string {
@@ -70,6 +73,11 @@ function inScope(flow: ResolvedFlow, scope: IncidentScope): boolean {
   }
 }
 
+/** The flows inside a breached scope. */
+export function flowsInScope(flows: readonly ResolvedFlow[], scope: IncidentScope): ResolvedFlow[] {
+  return flows.filter((f) => inScope(f, scope));
+}
+
 const distinct = (values: Iterable<string>): string[] => [...new Set(values)].sort((a, b) => a.localeCompare(b));
 
 /** Who would be affected, and with which data, if this scope were breached. */
@@ -80,8 +88,9 @@ export function incidentImpact(
 ): IncidentImpact {
   const id = scopeId(scope);
   const hit = flows.filter((f) => inScope(f, scope));
-  const students = exposureWithIds(id, hit, { population: 'students', weights: options.weights });
-  const staff = exposureWithIds(id, hit, { population: 'staff', weights: options.weights });
+  const common = options.weights ? { weights: options.weights } : {};
+  const students = exposureWithIds(id, hit, { ...common, population: 'students', ...(options.maxStudents !== undefined ? { maxPeople: options.maxStudents } : {}) });
+  const staff = exposureWithIds(id, hit, { ...common, population: 'staff', ...(options.maxStaff !== undefined ? { maxPeople: options.maxStaff } : {}) });
   return {
     scope,
     id,

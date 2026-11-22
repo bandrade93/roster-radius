@@ -32,6 +32,8 @@ export interface PublicationDuty {
 export interface BreachDuty {
   /** Stable ID, such as "il.parent_notice". */
   readonly id: string;
+  /** Who must act: the vendor, or the district. */
+  readonly party: 'vendor' | 'district';
   /** Who must do what. */
   readonly duty: string;
   /** Calendar days allowed, or null when the law sets no fixed number. */
@@ -95,6 +97,7 @@ export const STATE_LAWS: Readonly<Record<StateCode, StateLaw>> = {
     breach: [
       {
         id: 'il.operator_notice',
+        party: 'vendor',
         duty: 'The operator notifies the school of a breach of students’ covered information, in the most expedient time possible and without unreasonable delay.',
         days: 30,
         startsAt: 'the operator determines that a breach occurred',
@@ -102,6 +105,7 @@ export const STATE_LAWS: Readonly<Record<StateCode, StateLaw>> = {
       },
       {
         id: 'il.parent_notice',
+        party: 'district',
         duty: 'The school notifies the parents of the affected students. A law enforcement agency may ask in writing for a delay that would otherwise interfere with a criminal investigation.',
         days: 30,
         startsAt: 'the school receives the operator’s notice or determines that a breach occurred',
@@ -164,6 +168,7 @@ export const STATE_LAWS: Readonly<Record<StateCode, StateLaw>> = {
     breach: [
       {
         id: 'co.provider_notice',
+        party: 'vendor',
         duty: 'The contract provider notifies the district as soon as possible when it, or a subcontractor, discovers misuse or unauthorized release of student personally identifiable information.',
         days: null,
         startsAt: null,
@@ -171,6 +176,7 @@ export const STATE_LAWS: Readonly<Record<StateCode, StateLaw>> = {
       },
       {
         id: 'co.public_hearing',
+        party: 'district',
         duty: 'After a material breach of contract involving student data, the district’s governing board holds a public hearing within a reasonable time and decides whether to end the contract.',
         days: null,
         startsAt: null,
@@ -178,6 +184,7 @@ export const STATE_LAWS: Readonly<Record<StateCode, StateLaw>> = {
       },
       {
         id: 'co.resident_notice',
+        party: 'district',
         duty: 'Under the state breach law for governmental entities, the district notifies affected Colorado residents when their "personal information" was breached, in the most expedient time possible and without unreasonable delay.',
         days: 30,
         startsAt: 'the district determines that a security breach occurred',

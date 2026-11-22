@@ -1,6 +1,7 @@
 import { Unzip, UnzipInflate } from 'fflate';
 import { CsvError, CsvParser, type CsvRecord } from '../csv/index.js';
 import { normalizeGrade } from '../inventory/types.js';
+import { Sha256 } from '../trace/sha256.js';
 
 /**
  * OneRoster 1.1 CSV reader, v0.1.
@@ -8,7 +9,9 @@ import { normalizeGrade } from '../inventory/types.js';
  * Reads only what RosterRadius needs to know who an app reaches: schools from
  * orgs.csv, and from users.csv each person's identifier, role, schools and
  * grades. Names, emails and every other column are skipped as the file is
- * read, and other files, such as demographics.csv, are never opened.
+ * read, and other files, such as demographics.csv, are never opened. The
+ * `identifier` column is kept too, because files from Clever or the student
+ * information system often use it instead of the sourcedId.
  *
  * Files are read in chunks, so a large district's users.csv is never held in
  * memory as a whole. The result keeps identifiers in memory only, to count
@@ -23,12 +26,16 @@ export interface RosterSchool {
 }
 
 export interface RosterStudent {
+  /** The OneRoster `identifier`, often the district's own student ID; used to match other files. */
+  readonly identifier?: string;
   readonly schools: readonly string[];
   /** Grades normalized to PK, KG and 01 to 12 when recognized; other OneRoster codes kept as given. */
   readonly grades: readonly string[];
 }
 
 export interface RosterStaff {
+  /** The OneRoster `identifier`, often the district's own staff ID; used to match other files. */
+  readonly identifier?: string;
   readonly schools: readonly string[];
   readonly role: StaffRole;
 }
@@ -50,6 +57,8 @@ export interface Roster {
   readonly issues: readonly RosterIssue[];
   /** The files that were read. */
   readonly files: readonly string[];
+  /** Hash of each file read, by the path it was given as (see trace/inputs.ts). */
+  readonly hashes: readonly { readonly path: string; readonly sha256: string; readonly bytes: number }[];
 }
 
 /** The only files the reader opens. */
@@ -67,7 +76,8 @@ const values = (cell: string | undefined): string[] =>
     .filter((v) => v !== '');
 
 interface Sink {
-  push(text: string): void;
+  /** Adds text. When the bytes it was decoded from are known, they are hashed instead of the text. */
+  push(text: string, bytes?: Uint8Array): void;
   end(): void;
 }
 
@@ -77,11 +87,12 @@ interface Sink {
  */
 export class OneRosterBuilder {
   private readonly orgs = new Map<string, { name: string; type: string }>();
-  private readonly users = new Map<string, { role: string; orgs: string[]; grades: string[]; line: number }>();
+  private readonly users = new Map<string, { role: string; identifier: string; orgs: string[]; grades: string[]; line: number }>();
   private readonly manifest = new Map<string, string>();
   private readonly issues: RosterIssue[] = [];
   private readonly repeated = new Map<string, { file: string; line: number; count: number; message: string; severity: 'error' | 'warning' }>();
   private readonly seen: string[] = [];
+  private readonly hashes: { path: string; sha256: string; bytes: number }[] = [];
 
   /** Opens one file; returns undefined for files the reader never reads. */
   file(name: string): Sink | undefined {
@@ -104,11 +115,15 @@ export class OneRosterBuilder {
       }
       this.row(file, record, columns);
     });
+    const hash = new Sha256();
+    const path = name.replace(/\\/g, '/');
     return {
-      push: (text) => {
+      push: (text, bytes) => {
+        hash.update(bytes ?? text);
         if (!failed) parser.push(text);
       },
       end: () => {
+        this.hashes.push({ path, sha256: hash.hex(), bytes: hash.bytes });
         try {
           parser.end();
         } catch (e) {
@@ -150,7 +165,7 @@ export class OneRosterBuilder {
     if (this.users.has(id)) {
       this.note(file, record.line, 'duplicate', 'Repeated sourcedId: the later row replaces the earlier one.');
     }
-    this.users.set(id, { role: get('role').toLowerCase(), orgs: values(get('orgSourcedIds')), grades: values(get('grades')), line: record.line });
+    this.users.set(id, { role: get('role').toLowerCase(), identifier: get('identifier'), orgs: values(get('orgSourcedIds')), grades: values(get('grades')), line: record.line });
   }
 
   /** Ends reading and returns the roster. Call after every file has ended. */
@@ -181,9 +196,9 @@ export class OneRosterBuilder {
         if (u.grades.some((g) => normalizeGrade(g) === undefined)) {
           this.note('users.csv', u.line, 'grade', 'Students with a grade other than PK, KG or 01 to 12 are counted, but are left out when an app is limited to certain grades.');
         }
-        students.set(id, { schools: inSchools, grades });
+        students.set(id, { ...(u.identifier ? { identifier: u.identifier } : {}), schools: inSchools, grades });
       } else if (STAFF_ROLES.includes(u.role)) {
-        staff.set(id, { schools: inSchools, role: u.role as StaffRole });
+        staff.set(id, { ...(u.identifier ? { identifier: u.identifier } : {}), schools: inSchools, role: u.role as StaffRole });
       } else if (!IGNORED_ROLES.includes(u.role)) {
         this.note('users.csv', u.line, `role:${u.role}`, `Unknown role '${u.role}': these users are not counted.`);
       }
@@ -202,7 +217,7 @@ export class OneRosterBuilder {
         message: r.message,
       })),
     ];
-    return { schools, students, staff, issues, files: [...this.seen] };
+    return { schools, students, staff, issues, files: [...this.seen], hashes: [...this.hashes].sort((a, b) => a.path.localeCompare(b.path)) };
   }
 }
 
@@ -241,7 +256,7 @@ export async function readOneRosterZip(zip: Uint8Array | Iterable<Uint8Array> | 
         failure ??= err;
         return;
       }
-      sink.push(decoder.decode(chunk, { stream: !final }));
+      sink.push(decoder.decode(chunk, { stream: !final }), chunk);
       if (final) sink.end();
     };
     entry.start();
