@@ -10,6 +10,7 @@ import type { FieldDefinition } from './types.js';
  * - OneRoster 1.1.1 CSV Tables (1EdTech): users, demographics, orgs, classes, enrollments.
  * - Clever SFTP upload specification v2.1.1: schools, students, teachers, sections, enrollments, staff.
  * - Clever Data API v3.0 and v3.1, `roles.student.*` user fields.
+ * - `common`: spellings often seen in exports from student information systems.
  *
  * Sensitivity classes and weights are defined in `sensitivity.ts`.
  */
@@ -22,6 +23,7 @@ export const FIELDS = [
     sensitivity: 'identifier',
     exhibitB: 'Student Identifiers',
     aliases: {
+      common: ['ID', 'Student ID', 'StudentID', 'SIS ID', 'Local ID', 'Local Student ID'],
       oneroster: ['users.sourcedId'],
       cleverCsv: ['students.Student id'],
       cleverApi: ['roles.student.sis_id'],
@@ -46,6 +48,7 @@ export const FIELDS = [
     sensitivity: 'identifier',
     exhibitB: 'Student Identifiers',
     aliases: {
+      common: ['SSID', 'State ID', 'State Student ID'],
       cleverCsv: ['students.State id'],
       cleverApi: ['roles.student.state_id'],
     },
@@ -158,6 +161,7 @@ export const FIELDS = [
     sensitivity: 'location',
     exhibitB: 'Student Contact Information',
     aliases: {
+      common: ['Home Address', 'Street Address', 'Street', 'Mailing Address'],
       cleverCsv: [
         'students.Student street',
         'students.Student city',
@@ -202,6 +206,7 @@ export const FIELDS = [
     sensitivity: 'demographic',
     exhibitB: 'Demographics',
     aliases: {
+      common: ['Sex'],
       oneroster: ['demographics.sex'],
       cleverCsv: ['students.Gender'],
       cleverApi: ['roles.student.gender'],
@@ -214,6 +219,7 @@ export const FIELDS = [
     sensitivity: 'demographic',
     exhibitB: 'Demographics',
     aliases: {
+      common: ['Ethnicity', 'Race/Ethnicity', 'Race Ethnicity', 'Federal Race'],
       oneroster: [
         'demographics.americanIndianOrAlaskaNative',
         'demographics.asian',
@@ -233,6 +239,7 @@ export const FIELDS = [
     sensitivity: 'demographic',
     exhibitB: 'Demographics',
     aliases: {
+      common: ['Hispanic', 'Hispanic/Latino', 'Hispanic or Latino'],
       oneroster: ['demographics.hispanicOrLatinoEthnicity'],
       cleverCsv: ['students.Hispanic Latino'],
       cleverApi: ['roles.student.hispanic_ethnicity'],
@@ -245,6 +252,7 @@ export const FIELDS = [
     sensitivity: 'demographic',
     exhibitB: 'Demographics',
     aliases: {
+      common: ['Home Language', 'Primary Language', 'Language'],
       cleverCsv: ['students.Home language'],
       cleverApi: ['roles.student.home_language', 'roles.student.home_language_code'],
     },
@@ -267,6 +275,7 @@ export const FIELDS = [
     sensitivity: 'organizational',
     exhibitB: 'Enrollment',
     aliases: {
+      common: ['Grade Level', 'Current Grade'],
       oneroster: ['users.grades'],
       cleverCsv: ['students.Grade'],
       cleverApi: ['roles.student.grade'],
@@ -279,6 +288,7 @@ export const FIELDS = [
     sensitivity: 'organizational',
     exhibitB: 'Enrollment',
     aliases: {
+      common: ['Graduation Year', 'Grad Year', 'Cohort Year'],
       cleverCsv: ['students.Graduation year'],
       cleverApi: ['roles.student.graduation_year'],
     },
@@ -324,6 +334,7 @@ export const FIELDS = [
     sensitivity: 'special_status',
     exhibitB: 'Special Indicator',
     aliases: {
+      common: ['ELL', 'LEP', 'EL', 'English Learner', 'EL Status', 'LEP Status'],
       cleverCsv: ['students.Ell status'],
       cleverApi: ['roles.student.ell_status'],
     },
@@ -335,6 +346,7 @@ export const FIELDS = [
     sensitivity: 'special_status',
     exhibitB: 'Special Indicator',
     aliases: {
+      common: ['Lunch Status', 'Free/Reduced Lunch', 'Free Reduced Lunch', 'FRL', 'Meal Status', 'Meal Eligibility', 'Lunch Eligibility'],
       cleverCsv: ['students.Frl status'],
       cleverApi: ['roles.student.frl_status'],
     },
@@ -346,6 +358,7 @@ export const FIELDS = [
     sensitivity: 'special_status',
     exhibitB: 'Special Indicator',
     aliases: {
+      common: ['IEP', 'IEP Status', 'Special Education', 'SPED', 'Special Ed'],
       cleverCsv: ['students.IEP status'],
       cleverApi: ['roles.student.iep_status'],
     },
@@ -357,6 +370,7 @@ export const FIELDS = [
     sensitivity: 'special_status',
     exhibitB: 'Special Indicator',
     aliases: {
+      common: ['Primary Disability', 'Disability Code'],
       cleverCsv: ['students.Disability status', 'students.Disability type'],
       cleverApi: [
         'roles.student.disability.disability_status',
@@ -371,6 +385,7 @@ export const FIELDS = [
     sensitivity: 'special_status',
     exhibitB: 'Special Indicator',
     aliases: {
+      common: ['504', '504 Plan', 'Section 504'],
       cleverCsv: ['students.Section 504 status'],
       cleverApi: ['roles.student.section_504_status'],
     },
@@ -381,7 +396,8 @@ export const FIELDS = [
     label: 'Medical alerts and health data',
     sensitivity: 'special_status',
     exhibitB: 'Special Indicator',
-    aliases: {},
+    aliases: {
+      common: ['Medical Alert', 'Medical Alerts', 'Health Alert', 'Medical Conditions'],},
   },
   {
     key: 'student.living_situation',
@@ -389,7 +405,8 @@ export const FIELDS = [
     label: 'Living situation (homeless, foster care)',
     sensitivity: 'special_status',
     exhibitB: 'Special Indicator',
-    aliases: {},
+    aliases: {
+      common: ['Homeless', 'McKinney-Vento'],},
   },
   {
     key: 'student.gifted_status',
@@ -398,6 +415,7 @@ export const FIELDS = [
     sensitivity: 'academic',
     exhibitB: 'Student Program Membership',
     aliases: {
+      common: ['Gifted', 'GT', 'Gifted and Talented'],
       cleverCsv: ['students.Gifted status'],
       cleverApi: ['roles.student.gifted_status'],
     },
@@ -507,7 +525,8 @@ export const FIELDS = [
     label: 'Transportation (bus route, stop)',
     sensitivity: 'location',
     exhibitB: 'Transportation',
-    aliases: {},
+    aliases: {
+      common: ['Bus Route', 'Bus Stop', 'Bus Number', 'Bus'],},
   },
 
   // ── Guardians and student contacts ─────────────────────────────────────
@@ -529,6 +548,7 @@ export const FIELDS = [
     sensitivity: 'identifier',
     exhibitB: 'Parent/Guardian Name',
     aliases: {
+      common: ['Parent Name', 'Guardian Name', 'Parent/Guardian Name'],
       oneroster: ['users.givenName', 'users.middleName', 'users.familyName'],
       cleverCsv: ['students.Contact name'],
     },
@@ -549,6 +569,7 @@ export const FIELDS = [
     sensitivity: 'identifier',
     exhibitB: 'Parent/Guardian Contact Information',
     aliases: {
+      common: ['Parent Email', 'Guardian Email'],
       oneroster: ['users.email'],
       cleverCsv: ['students.Contact email'],
     },
@@ -560,6 +581,7 @@ export const FIELDS = [
     sensitivity: 'identifier',
     exhibitB: 'Parent/Guardian Contact Information',
     aliases: {
+      common: ['Parent Phone', 'Guardian Phone'],
       oneroster: ['users.phone', 'users.sms'],
       cleverCsv: ['students.Contact phone', 'students.Contact phone type'],
     },
@@ -573,6 +595,7 @@ export const FIELDS = [
     sensitivity: 'identifier',
     exhibitB: null,
     aliases: {
+      common: ['Staff ID', 'Teacher ID', 'Employee ID'],
       oneroster: ['users.sourcedId'],
       cleverCsv: ['teachers.Teacher id', 'staff.Staff id'],
     },

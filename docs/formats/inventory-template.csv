@@ -1,0 +1,2 @@
+app,vendor,channel,fields,category,channel_id,students,staff,schools,grades,contract_end,deletion_days,subprocessors,notes
+Example App,Example Vendor,clever,student.sis_id|student.first_name|student.last_name|student.grade_level|student.school,instructional_content,,all,,,,,,,Replace this row with your first app

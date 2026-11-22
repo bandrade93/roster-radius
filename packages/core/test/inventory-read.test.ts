@@ -2,12 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { readInventory } from '../src/index.js';
 
 // Same content as docs/formats/inventory-example.csv.
-const EXAMPLE = `app,vendor,channel,fields,category,channel_id,students,staff,schools,grades,contract_end,deletion_days,notes
-ReadWell,Acme Learning,clever,student.sis_id|student.first_name|student.last_name|student.grade_level|student.school|student.birth_date|staff.id|staff.first_name|staff.last_name|staff.email,instructional_content,,all,teachers,,KG|01|02|03|04|05,2027-06-30,60,Elementary reading
-MathPath,Acme Learning,sftp,file:exports/mathpath_students.csv,instructional_content,,all,,Lincoln Middle|Roosevelt Middle,,2027-06-30,60,Nightly SFTP export to the vendor
-LunchLine,Food Services Co,sftp,student.sis_id|student.student_number|student.first_name|student.last_name|student.school|student.grade_level|student.frl_status,nutrition,,all,,,,2026-06-30,30,Cafeteria point of sale
-QuizHub,QuizHub Inc,clever,student.first_name|student.last_name|student.email,,,file:clever/quizhub/students.csv,,,,,,Teacher-requested app
-FamilyTalk,Family Messaging LLC,manual_upload,student.first_name|student.last_name|guardian.name|guardian.phone|guardian.email|student.home_language,family_communication,,count:1700,,,,2027-12-31,90,Uploaded by the front office twice a year
+const EXAMPLE = `app,vendor,channel,fields,category,channel_id,students,staff,schools,grades,contract_end,deletion_days,subprocessors,notes
+ReadWell,Acme Learning,clever,student.sis_id|student.first_name|student.last_name|student.grade_level|student.school|student.birth_date|staff.id|staff.first_name|staff.last_name|staff.email,instructional_content,,all,teachers,,KG|01|02|03|04|05,2027-06-30,60,CloudHost Inc|TutorAI Labs [ai],Elementary reading
+MathPath,Acme Learning,sftp,file:exports/mathpath_students.csv,instructional_content,,all,,Lincoln Middle|Roosevelt Middle,,2027-06-30,60,CloudHost Inc|TutorAI Labs [ai],Nightly SFTP export to the vendor
+LunchLine,Food Services Co,sftp,student.sis_id|student.student_number|student.first_name|student.last_name|student.school|student.grade_level|student.frl_status,nutrition,,all,,,,2026-06-30,30,,Cafeteria point of sale
+QuizHub,QuizHub Inc,clever,student.first_name|student.last_name|student.email,,,file:clever/quizhub/students.csv,,,,,,,Teacher-requested app
+FamilyTalk,Family Messaging LLC,manual_upload,student.first_name|student.last_name|guardian.name|guardian.phone|guardian.email|student.home_language,family_communication,,count:1700,,,,2027-12-31,90,TextRelay Co,Uploaded by the front office twice a year
 `;
 
 const header = 'app,vendor,channel,fields,students,staff,grades,category,contract_end,deletion_days';
@@ -36,6 +36,11 @@ describe('reading the example inventory', () => {
     expect(quizHub?.students).toEqual({ kind: 'file', path: 'clever/quizhub/students.csv' });
     expect(familyTalk?.students).toEqual({ kind: 'count', count: 1700 });
     expect(familyTalk?.line).toBe(6);
+    expect(readWell?.subprocessors).toEqual([
+      { name: 'CloudHost Inc', ai: false },
+      { name: 'TutorAI Labs', ai: true },
+    ]);
+    expect(quizHub?.subprocessors).toEqual([]);
   });
 });
 
@@ -54,6 +59,18 @@ describe('header problems', () => {
 
   it('matches column names without regard to case', () => {
     expect(readInventory('App,VENDOR,Channel,Fields\nX,Y,clever,student.first_name').rows).toHaveLength(1);
+  });
+
+  it('ignores the empty rows spreadsheet programs leave at the end', () => {
+    const r = readInventory('app,vendor,channel,fields\nA,V,clever,student.first_name\n,,,\n,,,\n');
+    expect(r.rows).toHaveLength(1);
+    expect(r.issues).toEqual([]);
+  });
+
+  it('reads a file saved with semicolons, and says so', () => {
+    const r = readInventory('app;vendor;channel;fields\nA;V;clever;student.first_name|student.last_name\n');
+    expect(r.rows[0]?.fields).toEqual(['student.first_name', 'student.last_name']);
+    expect(r.issues).toEqual([expect.objectContaining({ severity: 'warning', message: expect.stringContaining('semicolons') })]);
   });
 
   it('reports an empty file', () => {
@@ -109,6 +126,19 @@ describe('row problems, each with its line and column', () => {
     const r = readInventory(`${header}\nA,V,clever,student.first_name,,,,,,\nA,V,clever,student.last_name,,,,,,`);
     expect(r.rows).toHaveLength(2);
     expect(r.issues[0]?.message).toContain("already has a row for channel 'clever' on line 2");
+  });
+
+  it('reads subprocessors, marks AI providers and warns about unknown marks or repeats', () => {
+    const r = readInventory('app,vendor,channel,fields,subprocessors\nA,V,clever,student.first_name,Host Co|Model Lab [AI]|host co|Data Co [eu]');
+    expect(r.rows[0]?.subprocessors).toEqual([
+      { name: 'Host Co', ai: false },
+      { name: 'Model Lab', ai: true },
+      { name: 'Data Co', ai: false },
+    ]);
+    expect(r.issues.map((i) => i.message)).toEqual([
+      "Subprocessor 'host co' is listed twice.",
+      "Unknown mark [eu] on 'Data Co' is ignored. The only mark is [ai].",
+    ]);
   });
 
   it('reports a broken quote instead of throwing', () => {

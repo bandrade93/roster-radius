@@ -23,14 +23,12 @@ export const INVENTORY_COLUMNS = [
   'grades',
   'contract_end',
   'deletion_days',
+  'subprocessors',
   'notes',
 ] as const;
 export type InventoryColumn = (typeof INVENTORY_COLUMNS)[number];
 
 export const REQUIRED_COLUMNS = ['app', 'vendor', 'channel', 'fields'] as const satisfies readonly InventoryColumn[];
-
-/** Separator for lists inside a cell. */
-export const LIST_SEPARATOR = '|';
 
 export const CHANNEL_TYPES = ['clever', 'classlink', 'sftp', 'oneroster', 'manual_upload', 'sso', 'other'] as const;
 export type ChannelType = (typeof CHANNEL_TYPES)[number];
@@ -52,6 +50,13 @@ export type PeopleSpec =
 
 /** Where the field list came from: typed into the inventory, or read from the header of a file. */
 export type FieldSource = { readonly kind: 'entered' } | { readonly kind: 'file'; readonly path: string };
+
+/** A company the vendor passes the data on to, such as a hosting or AI provider. */
+export interface Subprocessor {
+  readonly name: string;
+  /** Marked `[ai]` in the inventory: an AI model provider that receives the data. */
+  readonly ai: boolean;
+}
 
 /** One inventory row, after reading and validation. */
 export interface InventoryRow {
@@ -75,6 +80,8 @@ export interface InventoryRow {
   /** Last day of the agreement, as YYYY-MM-DD. */
   readonly contractEnd?: string;
   readonly deletionDays?: number;
+  /** Subprocessors the vendor declares for this app; empty when none were recorded. */
+  readonly subprocessors: readonly Subprocessor[];
   readonly notes?: string;
 }
 

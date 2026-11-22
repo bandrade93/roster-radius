@@ -11,6 +11,7 @@ A complete fictional district for trying RosterRadius, testing it and demonstrat
 | `exports/mathpath_students.csv` | The nightly SFTP export sent to one app. Its `Locker` column is not in the catalog, on purpose. |
 | `inventory.csv` | The app inventory: 8 apps from 7 vendors. |
 | `contracts.csv` | 5 data privacy agreements. |
+| `declared.csv` | What the district published on its privacy page. It leaves out two vendors and some data on purpose, and still lists a vendor that no longer receives data. |
 
 OneRoster `sourcedId` values (`or-u-00001`) differ from the district's own student IDs (`100001`), which Clever and the SFTP export use, as often happens in real exports.
 

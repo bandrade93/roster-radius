@@ -1,0 +1,4 @@
+vendor,apps,exhibit_b,fields,published_on,source,notes
+Acme Learning,,Student Name|Student Identifiers|Enrollment|Demographics,,2026-08-15,https://www.example-district.org/privacy,Copied from the district's privacy page
+Food Services Co,LunchLine,Student Name|Student Identifiers|Enrollment|Special Indicator,,2026-08-15,https://www.example-district.org/privacy,
+Transit Apps LLC,,Student Name|Student Identifiers,student.transportation,2026-08-15,https://www.example-district.org/privacy,The page lists bus stop as a separate item

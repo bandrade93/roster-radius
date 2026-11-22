@@ -2,7 +2,6 @@ export {
   CHANNEL_TYPES,
   GRADE_CODES,
   INVENTORY_COLUMNS,
-  LIST_SEPARATOR,
   REQUIRED_COLUMNS,
   SHARED_CHANNELS,
   defaultChannelId,
@@ -13,6 +12,6 @@ export {
   type InventoryColumn,
   type InventoryRow,
   type PeopleSpec,
+  type Subprocessor,
 } from './types.js';
-export { CsvError, CsvParser, parseCsv, type CsvRecord } from './csv.js';
 export { readInventory, type InventoryIssue, type InventoryResult, type IssueSeverity } from './read.js';

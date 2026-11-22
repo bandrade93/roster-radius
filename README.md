@@ -40,11 +40,11 @@ packages/
   core/         the exposure engine (in progress)
 docs/
   adr/          architecture decision records
-  formats/      input file formats: app inventory and contracts
+  formats/      input file formats and the table of accepted fields
   methodology/  limitations, federal legal basis and state law table
 examples/
   synthetic-district/  a complete fictional district for trying the tool
-scripts/        development scripts (npm run synthetic)
+scripts/        development scripts (npm run synthetic, npm run fields)
 ```
 
 ## Development

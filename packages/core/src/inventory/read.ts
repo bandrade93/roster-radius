@@ -1,11 +1,10 @@
 import { APP_CATEGORIES, type AppCategory } from '../baselines/index.js';
-import { FIELDS, type FieldKey } from '../catalog/index.js';
-import { CsvError, parseCsv } from './csv.js';
+import { FIELDS, fieldByName, type FieldKey } from '../catalog/index.js';
+import { isValidDate, readTable, splitList as list, suggest } from '../csv/index.js';
 import {
   CHANNEL_TYPES,
   GRADE_CODES,
   INVENTORY_COLUMNS,
-  LIST_SEPARATOR,
   REQUIRED_COLUMNS,
   defaultChannelId,
   normalizeGrade,
@@ -15,6 +14,7 @@ import {
   type InventoryColumn,
   type InventoryRow,
   type PeopleSpec,
+  type Subprocessor,
 } from './types.js';
 
 /**
@@ -40,110 +40,31 @@ export interface InventoryResult {
   readonly issues: readonly InventoryIssue[];
 }
 
-const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const CATEGORY_KEYS = Object.keys(APP_CATEGORIES) as AppCategory[];
-const FIELD_BY_NAME = new Map<string, FieldKey>();
-for (const f of FIELDS) {
-  FIELD_BY_NAME.set(f.key.toLowerCase(), f.key);
-  FIELD_BY_NAME.set(f.label.toLowerCase(), f.key);
-}
-
-/** Edit distance, for "did you mean" suggestions. */
-function distance(a: string, b: string): number {
-  const prev = Array.from({ length: b.length + 1 }, (_, j) => j);
-  for (let i = 1; i <= a.length; i++) {
-    let diag = prev[0]!;
-    prev[0] = i;
-    for (let j = 1; j <= b.length; j++) {
-      const tmp = prev[j]!;
-      prev[j] = Math.min(prev[j]! + 1, prev[j - 1]! + 1, diag + (a[i - 1] === b[j - 1] ? 0 : 1));
-      diag = tmp;
-    }
-  }
-  return prev[b.length]!;
-}
-
-function suggest(value: string, options: Iterable<string>): string {
-  const v = value.toLowerCase();
-  const all = [...options];
-  // A value that starts an option ("instructional" for "instructional_content") is a likely abbreviation.
-  const prefixed = all.filter((o) => v.length >= 4 && o.toLowerCase().startsWith(v)).sort((a, b) => a.length - b.length);
-  if (prefixed.length > 0) return ` Did you mean '${prefixed[0]}'?`;
-  let best: string | undefined;
-  let bestD = Infinity;
-  for (const o of all) {
-    const d = distance(v, o.toLowerCase());
-    if (d < bestD) [best, bestD] = [o, d];
-  }
-  return best !== undefined && bestD <= Math.max(2, Math.floor(v.length / 3)) ? ` Did you mean '${best}'?` : '';
-}
-
-const list = (cell: string): string[] =>
-  cell
-    .split(LIST_SEPARATOR)
-    .map((s) => s.trim())
-    .filter((s) => s !== '');
-
-function isValidDate(value: string): boolean {
-  if (!DATE.test(value)) return false;
-  const d = new Date(`${value}T00:00:00Z`);
-  return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === value;
-}
+/** Every key and label, for suggestions. */
+const FIELD_NAMES = FIELDS.flatMap((f) => [f.key, f.label]);
 
 export function readInventory(text: string): InventoryResult {
   const issues: InventoryIssue[] = [];
   const rows: InventoryRow[] = [];
 
-  let records;
-  try {
-    records = parseCsv(text);
-  } catch (e) {
-    if (e instanceof CsvError) return { rows, issues: [{ severity: 'error', line: e.line, message: e.message.replace(/^line \d+: /, '') }] };
-    throw e;
-  }
-  const header = records[0];
-  if (!header) return { rows, issues: [{ severity: 'error', line: 1, message: 'The file is empty.' }] };
-
-  // Header: map each known column to its position.
-  const position = new Map<InventoryColumn, number>();
-  header.cells.forEach((raw, i) => {
-    const name = raw.trim().toLowerCase();
-    if ((INVENTORY_COLUMNS as readonly string[]).includes(name)) {
-      const col = name as InventoryColumn;
-      if (position.has(col)) issues.push({ severity: 'error', line: header.line, column: col, message: `Column '${col}' appears twice.` });
-      else position.set(col, i);
-    } else if (name !== '') {
-      issues.push({
-        severity: 'warning',
-        line: header.line,
-        column: raw.trim(),
-        message: `Unknown column '${raw.trim()}' is ignored.${suggest(name, INVENTORY_COLUMNS)}`,
-      });
-    }
-  });
-  const missing = REQUIRED_COLUMNS.filter((c) => !position.has(c));
-  if (missing.length > 0) {
-    issues.push({ severity: 'error', line: header.line, message: `Missing required column(s): ${missing.join(', ')}.` });
-    return { rows, issues };
-  }
-  if (issues.some((i) => i.severity === 'error')) return { rows, issues };
+  const table = readTable(text, INVENTORY_COLUMNS, REQUIRED_COLUMNS);
+  issues.push(...table.issues);
+  if (!table.ok) return { rows, issues };
 
   const appInfo = new Map<string, { vendor: string; category: AppCategory | undefined; line: number }>();
   const flowLine = new Map<string, number>();
 
-  for (const record of records.slice(1)) {
+  for (const record of table.rows) {
     const line = record.line;
     const rowIssues: InventoryIssue[] = [];
     const error = (column: InventoryColumn | undefined, message: string) =>
       rowIssues.push({ severity: 'error', line, ...(column ? { column } : {}), message });
     const warning = (column: InventoryColumn | undefined, message: string) =>
       rowIssues.push({ severity: 'warning', line, ...(column ? { column } : {}), message });
-    const get = (col: InventoryColumn): string => {
-      const i = position.get(col);
-      return i === undefined ? '' : (record.cells[i] ?? '').trim();
-    };
+    const get = (col: InventoryColumn): string => record.get(col);
 
-    if (record.cells.length > header.cells.length) error(undefined, `The row has ${record.cells.length} values but the header has ${header.cells.length} columns.`);
+    if (record.tooLong) error(undefined, `The row has more values than the header has columns (${table.columnCount}).`);
 
     const app = get('app');
     const vendor = get('vendor');
@@ -169,8 +90,8 @@ export function readInventory(text: string): InventoryResult {
     } else {
       const seen = new Set<FieldKey>();
       for (const name of list(fieldsRaw)) {
-        const key = FIELD_BY_NAME.get(name.toLowerCase());
-        if (!key) error('fields', `Unknown field '${name}'.${suggest(name, FIELD_BY_NAME.keys())}`);
+        const key = fieldByName(name);
+        if (!key) error('fields', `Unknown field '${name}'.${suggest(name, FIELD_NAMES)}`);
         else if (seen.has(key)) warning('fields', `Field '${name}' is listed twice.`);
         else seen.add(key);
       }
@@ -247,6 +168,24 @@ export function readInventory(text: string): InventoryResult {
     }
     if (deletionDays !== undefined && contractEnd === '') warning('deletion_days', "'deletion_days' has no effect without 'contract_end'.");
 
+    // Subprocessors: names separated by |, an AI provider marked [ai].
+    const subprocessors: Subprocessor[] = [];
+    for (const item of list(get('subprocessors'))) {
+      const tags = [...item.matchAll(/\[([^\]]*)\]/g)].map((m) => m[1]!.trim().toLowerCase());
+      const name = item.replace(/\[[^\]]*\]/g, '').trim();
+      const unknown = tags.filter((t) => t !== 'ai');
+      if (name === '') {
+        error('subprocessors', `'${item}' has no name.`);
+        continue;
+      }
+      if (unknown.length > 0) warning('subprocessors', `Unknown mark [${unknown.join('], [')}] on '${name}' is ignored. The only mark is [ai].`);
+      if (subprocessors.some((x) => x.name.toLowerCase() === name.toLowerCase())) {
+        warning('subprocessors', `Subprocessor '${name}' is listed twice.`);
+        continue;
+      }
+      subprocessors.push({ name, ai: tags.includes('ai') });
+    }
+
     // Consistency across rows: an app belongs to one vendor and one category.
     if (app !== '' && vendor !== '') {
       const prev = appInfo.get(app);
@@ -285,10 +224,11 @@ export function readInventory(text: string): InventoryResult {
       grades,
       ...(contractEnd ? { contractEnd } : {}),
       ...(deletionDays !== undefined ? { deletionDays } : {}),
+      subprocessors,
       ...(notes ? { notes } : {}),
     });
   }
 
-  if (records.length === 1) issues.push({ severity: 'warning', line: header.line, message: 'The inventory has a header but no rows.' });
+  if (table.rows.length === 0) issues.push({ severity: 'warning', line: table.headerLine, message: 'The inventory has a header but no rows.' });
   return { rows, issues };
 }

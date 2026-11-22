@@ -4,7 +4,8 @@
   "scripts": {
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "synthetic": "tsx scripts/generate-synthetic.ts"
+    "synthetic": "tsx scripts/generate-synthetic.ts",
+    "fields": "tsx scripts/generate-fields.ts"
   },
   "keywords": [
     "k12",

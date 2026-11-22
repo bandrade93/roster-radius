@@ -25,7 +25,7 @@ Exhibit B of the National Data Privacy Agreement is the schedule of student data
 
 Application Technology Meta Data, Application Use Statistics, Assessment, Attendance, Communications, Conduct, Demographics, Enrollment, Parent/Guardian Contact Information, Parent/Guardian ID, Parent/Guardian Name, Schedule, Special Indicator, Student Contact Information, Student Identifiers, Student In App Performance, Student Name, Student Program Membership, Student Survey Responses, Student Work, Transcript, Transportation.
 
-Names are matched without regard to case, spaces or punctuation. Each field in the [catalog](../../packages/core/src/catalog/fields.ts) belongs to one category.
+Names are matched without regard to case, spaces or punctuation. Each field in the [accepted fields](fields.md) table belongs to one category.
 
 **Whole category or single elements.** If the agreement marks every element of a category, list the category in `exhibit_b`. If it marks only some, list those fields in `fields` instead. For example, an agreement that allows date of birth but not race, both in "Demographics", lists `student.birth_date` in `fields` and not "Demographics" in `exhibit_b`.
 

@@ -1,0 +1,7 @@
+vendor,apps,exhibit_b,fields,published_on,source,notes
+Acme Learning,,Student Name|Student Identifiers|Enrollment|Demographics,,2026-08-15,https://www.synthetic-usd.example/privacy,
+Food Services Co,LunchLine,Student Name|Student Identifiers|Enrollment|Special Indicator,,2026-08-15,https://www.synthetic-usd.example/privacy,
+Classroom Cloud Inc,,Student Name|Student Identifiers|Enrollment|Schedule|Student Contact Information,,2026-08-15,https://www.synthetic-usd.example/privacy,
+Library Systems Co,,Student Name|Student Identifiers|Enrollment,,2026-08-15,https://www.synthetic-usd.example/privacy,
+Transit Apps LLC,,Student Name|Student Identifiers|Enrollment,student.transportation,2026-08-15,https://www.synthetic-usd.example/privacy,Page lists bus stop
+OldReader Co,,Student Name|Student Identifiers,,2026-08-15,https://www.synthetic-usd.example/privacy,App retired in 2025

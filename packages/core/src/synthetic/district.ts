@@ -151,15 +151,15 @@ export function generateSyntheticDistrict(options: SyntheticOptions = {}): Synth
 
   // ── App inventory ───────────────────────────────────────────────────────
   files['inventory.csv'] = csv([
-    ['app', 'vendor', 'channel', 'fields', 'category', 'channel_id', 'students', 'staff', 'schools', 'grades', 'contract_end', 'deletion_days', 'notes'],
-    ['ReadWell', 'Acme Learning', 'clever', 'student.sis_id|student.first_name|student.last_name|student.grade_level|student.school|student.birth_date|student.iep_status|staff.id|staff.first_name|staff.last_name|staff.email', 'instructional_content', '', 'all', 'teachers', '', 'KG|01|02|03|04|05', '', '', 'Elementary reading'],
-    ['MathPath', 'Acme Learning', 'sftp', 'file:exports/mathpath_students.csv', 'instructional_content', '', 'all', '', SCHOOLS[2]!.name, '', '', '', 'Nightly SFTP export'],
-    ['LunchLine', 'Food Services Co', 'sftp', 'student.sis_id|student.student_number|student.first_name|student.last_name|student.school|student.grade_level|student.frl_status', 'nutrition', '', 'all', '', '', '', '', '', 'Cafeteria point of sale'],
-    ['QuizHub', 'QuizHub Inc', 'clever', 'student.first_name|student.last_name|student.email', '', '', 'file:clever/quizhub/students.csv', '', '', '', '', '', 'Teacher-requested app'],
-    ['FamilyTalk', 'Family Messaging LLC', 'manual_upload', 'student.first_name|student.last_name|guardian.name|guardian.phone|guardian.email|student.home_language', 'family_communication', '', 'count:1600', '', '', '', '', '', 'Uploaded by the front office'],
-    ['ClassCloud', 'Classroom Cloud Inc', 'clever', 'student.sis_id|student.first_name|student.last_name|student.email|student.grade_level|student.class_enrollments|staff.id|staff.first_name|staff.last_name|staff.email', 'learning_management', '', 'all', 'teachers', `${SCHOOLS[2]!.name}|${SCHOOLS[3]!.name}`, '', '', '', 'Secondary LMS'],
-    ['ShelfScan', 'Library Systems Co', 'sftp', 'student.sis_id|student.first_name|student.last_name|student.username|student.password|student.school', 'library', '', 'all', '', '', '', '', '', 'Library circulation'],
-    ['RouteRider', 'Transit Apps LLC', 'sftp', 'student.sis_id|student.first_name|student.last_name|student.address|student.transportation|student.school', 'transportation', '', 'all', '', '', '', '2027-08-15', '90', 'Bus routing'],
+    ['app', 'vendor', 'channel', 'fields', 'category', 'channel_id', 'students', 'staff', 'schools', 'grades', 'contract_end', 'deletion_days', 'subprocessors', 'notes'],
+    ['ReadWell', 'Acme Learning', 'clever', 'student.sis_id|student.first_name|student.last_name|student.grade_level|student.school|student.birth_date|student.iep_status|staff.id|staff.first_name|staff.last_name|staff.email', 'instructional_content', '', 'all', 'teachers', '', 'KG|01|02|03|04|05', '', '', 'CloudHost Inc|TutorAI Labs [ai]', 'Elementary reading'],
+    ['MathPath', 'Acme Learning', 'sftp', 'file:exports/mathpath_students.csv', 'instructional_content', '', 'all', '', SCHOOLS[2]!.name, '', '', '', 'CloudHost Inc|TutorAI Labs [ai]', 'Nightly SFTP export'],
+    ['LunchLine', 'Food Services Co', 'sftp', 'student.sis_id|student.student_number|student.first_name|student.last_name|student.school|student.grade_level|student.frl_status', 'nutrition', '', 'all', '', '', '', '', '', '', 'Cafeteria point of sale'],
+    ['QuizHub', 'QuizHub Inc', 'clever', 'student.first_name|student.last_name|student.email', '', '', 'file:clever/quizhub/students.csv', '', '', '', '', '', 'QuizAnalytics Co', 'Teacher-requested app'],
+    ['FamilyTalk', 'Family Messaging LLC', 'manual_upload', 'student.first_name|student.last_name|guardian.name|guardian.phone|guardian.email|student.home_language', 'family_communication', '', 'count:1600', '', '', '', '', '', 'TextRelay Co', 'Uploaded by the front office'],
+    ['ClassCloud', 'Classroom Cloud Inc', 'clever', 'student.sis_id|student.first_name|student.last_name|student.email|student.grade_level|student.class_enrollments|staff.id|staff.first_name|staff.last_name|staff.email', 'learning_management', '', 'all', 'teachers', `${SCHOOLS[2]!.name}|${SCHOOLS[3]!.name}`, '', '', '', 'CloudHost Inc|InsightEngine AI [ai]', 'Secondary LMS'],
+    ['ShelfScan', 'Library Systems Co', 'sftp', 'student.sis_id|student.first_name|student.last_name|student.username|student.password|student.school', 'library', '', 'all', '', '', '', '', '', '', 'Library circulation'],
+    ['RouteRider', 'Transit Apps LLC', 'sftp', 'student.sis_id|student.first_name|student.last_name|student.address|student.transportation|student.school', 'transportation', '', 'all', '', '', '', '2027-08-15', '90', 'MapTiles Inc', 'Bus routing'],
   ]);
 
   // ── Contracts ───────────────────────────────────────────────────────────
@@ -170,6 +170,20 @@ export function generateSyntheticDistrict(options: SyntheticOptions = {}): Synth
     ['QUIZ-TOS', 'QuizHub Inc', 'QuizHub', '', '', '', '', 'vendor_terms', '', 'Click-through terms'],
     ['CLOUD-2024', 'Classroom Cloud Inc', '', 'Student Name|Student Identifiers|Enrollment|Schedule|Student Contact Information|Student Work', '', '2026-12-31', '60', 'ndpa', '', 'Up for renewal'],
     ['SHELF-2025', 'Library Systems Co', '', 'Student Name|Student Identifiers|Enrollment', '', '2028-06-30', '30', 'ndpa', '', ''],
+  ]);
+
+  // ── Declared list: what the district published on its privacy page ─────
+  // Left out on purpose: two vendors (Family Messaging LLC, QuizHub Inc) and
+  // some data (Acme's IEP status, meal eligibility and home address; Transit's
+  // home address). OldReader Co is still listed, though no app sends it data.
+  files['declared.csv'] = csv([
+    ['vendor', 'apps', 'exhibit_b', 'fields', 'published_on', 'source', 'notes'],
+    ['Acme Learning', '', 'Student Name|Student Identifiers|Enrollment|Demographics', '', '2026-08-15', 'https://www.synthetic-usd.example/privacy', ''],
+    ['Food Services Co', 'LunchLine', 'Student Name|Student Identifiers|Enrollment|Special Indicator', '', '2026-08-15', 'https://www.synthetic-usd.example/privacy', ''],
+    ['Classroom Cloud Inc', '', 'Student Name|Student Identifiers|Enrollment|Schedule|Student Contact Information', '', '2026-08-15', 'https://www.synthetic-usd.example/privacy', ''],
+    ['Library Systems Co', '', 'Student Name|Student Identifiers|Enrollment', '', '2026-08-15', 'https://www.synthetic-usd.example/privacy', ''],
+    ['Transit Apps LLC', '', 'Student Name|Student Identifiers|Enrollment', 'student.transportation', '2026-08-15', 'https://www.synthetic-usd.example/privacy', 'Page lists bus stop'],
+    ['OldReader Co', '', 'Student Name|Student Identifiers', '', '2026-08-15', 'https://www.synthetic-usd.example/privacy', 'App retired in 2025'],
   ]);
 
   return {

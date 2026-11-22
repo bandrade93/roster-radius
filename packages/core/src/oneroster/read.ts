@@ -1,5 +1,5 @@
 import { Unzip, UnzipInflate } from 'fflate';
-import { CsvError, CsvParser, type CsvRecord } from '../inventory/csv.js';
+import { CsvError, CsvParser, type CsvRecord } from '../csv/index.js';
 import { normalizeGrade } from '../inventory/types.js';
 
 /**

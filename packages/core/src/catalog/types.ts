@@ -55,8 +55,11 @@ export type ExhibitBCategory = (typeof EXHIBIT_B_CATEGORIES)[number];
  *   the same names until a real export confirms it (ADR 0001).
  * - `cleverApi`: Clever Data API v3.x user fields (for example
  *   `roles.student.dob`). Only fields confirmed in Clever's public docs.
+ * - `common`: spellings often seen in exports from student information systems
+ *   and in hand-made files (`Ethnicity`, `Lunch Status`, `IEP`), plain column
+ *   names without a file prefix. Used to recognize generic export headers.
  */
-export const SOURCES = ['oneroster', 'cleverCsv', 'cleverApi'] as const;
+export const SOURCES = ['oneroster', 'cleverCsv', 'cleverApi', 'common'] as const;
 export type Source = (typeof SOURCES)[number];
 
 export interface FieldDefinition {

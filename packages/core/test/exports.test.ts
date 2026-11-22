@@ -25,8 +25,27 @@ describe('recognizing a header', () => {
   it('reads an export from the student information system with any spelling, and lists what it does not know', () => {
     const r = recognizeHeader('mathpath_students.csv', ['Student ID', 'First Name', 'last_name', 'BirthDate', 'Address', 'Free/Reduced Lunch', 'Locker']);
     expect(r.format).toBe('generic');
-    expect(r.fields).toEqual(['student.sis_id', 'student.first_name', 'student.last_name', 'student.birth_date', 'student.address']);
-    expect(r.columns.filter((c) => c.status === 'unknown').map((c) => c.column)).toEqual(['Free/Reduced Lunch', 'Locker']);
+    expect(r.fields).toEqual(['student.sis_id', 'student.first_name', 'student.last_name', 'student.birth_date', 'student.address', 'student.frl_status']);
+    expect(r.columns.filter((c) => c.status === 'unknown').map((c) => c.column)).toEqual(['Locker']);
+  });
+
+  it('recognizes common SIS spellings and prefers the person\'s own field', () => {
+    const r = recognizeHeader('sis_export.csv', ['ID', 'Name', 'Ethnicity', 'Lunch Status', 'IEP', '504', 'LEP', 'SSID', 'Bus Route', 'Parent Email']);
+    const by = Object.fromEntries(r.columns.map((c) => [c.column, c.field ?? c.status]));
+    expect(by).toEqual({
+      ID: 'student.sis_id',
+      // Could be the guardian's, the school's or the section's name: not guessed.
+      Name: 'ambiguous',
+      Ethnicity: 'student.race',
+      'Lunch Status': 'student.frl_status',
+      IEP: 'student.iep_status',
+      '504': 'student.section_504_status',
+      LEP: 'student.ell_status',
+      SSID: 'student.state_id',
+      'Bus Route': 'student.transportation',
+      'Parent Email': 'guardian.email',
+    });
+    expect(recognizeHeader('staff_export.csv', ['ID', 'Email']).fields).toEqual(['staff.id', 'staff.email']);
   });
 
   it('accepts catalog keys and labels as column names', () => {
@@ -69,6 +88,12 @@ describe('reading a file that lists who an app reaches', () => {
     expect(r.rows).toBe(2);
     expect(r.ids).toBeUndefined();
     expect(r.issues[0]?.message).toContain('given as a range');
+  });
+
+  it('finds the ID in a column named just ID', async () => {
+    const r = await readPeopleFile('roster.csv', 'ID,First Name\n1,Ana\n2,Ben\n');
+    expect(r.ids?.size).toBe(2);
+    expect(r.idColumn).toBe('ID');
   });
 
   it('reads staff files by their name', async () => {

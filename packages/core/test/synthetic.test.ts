@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { generateSyntheticDistrict, readContracts, readExportHeader, readInventory, readOneRosterFiles, readPeopleFile } from '../src/index.js';
+import { generateSyntheticDistrict, readContracts, readDeclaredList, readExportHeader, readInventory, readOneRosterFiles, readPeopleFile } from '../src/index.js';
 
 describe('synthetic district', () => {
   const district = generateSyntheticDistrict();
@@ -29,6 +29,15 @@ describe('synthetic district', () => {
     const { contracts, issues } = readContracts(files['contracts.csv']!);
     expect(contracts).toHaveLength(5);
     expect(issues.map((i) => `${i.severity}:${i.line}`)).toEqual(['warning:4']);
+  });
+
+  it('has a declared list that leaves out two vendors on purpose', () => {
+    const { declarations, issues } = readDeclaredList(files['declared.csv']!);
+    expect(issues).toEqual([]);
+    const listed = new Set(declarations.map((d) => d.vendorId));
+    expect(listed.has('Family Messaging LLC')).toBe(false);
+    expect(listed.has('QuizHub Inc')).toBe(false);
+    expect(listed.has('OldReader Co')).toBe(true);
   });
 
   it('has an SFTP export whose header is recognized, with one unknown column on purpose', async () => {

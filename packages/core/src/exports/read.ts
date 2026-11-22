@@ -1,6 +1,6 @@
 import { FIELDS, findFieldKey, type FieldKey } from '../catalog/index.js';
 import type { Source, Subject } from '../catalog/types.js';
-import { CsvError, CsvParser, type CsvRecord } from '../inventory/csv.js';
+import { CsvError, CsvParser, type CsvRecord } from '../csv/index.js';
 import type { TextSource } from '../oneroster/read.js';
 
 /**
@@ -109,10 +109,12 @@ export function recognizeHeader(fileName: string, header: readonly string[], kin
       const bySubject = GENERIC.get(loose(column));
       for (const s of subjects) for (const key of bySubject?.get(s) ?? []) if (!candidates.includes(key)) candidates.push(key);
     }
-    // A column that names both a student and a guardian field ("phone") is resolved to the student's own field.
-    if (candidates.length > 1 && kind === 'students') {
-      const own = candidates.filter((k) => k.startsWith('student.'));
-      if (own.length === 1) candidates = own;
+    // In a file about students (or staff), a column that could also be a guardian, school or section field
+    // ("ID", "phone") is the person's own field when there is one.
+    if (candidates.length > 1) {
+      const prefix = kind === 'students' ? 'student.' : 'staff.';
+      const own = candidates.filter((k) => k.startsWith(prefix));
+      if (own.length > 0) candidates = own;
     }
     if (candidates.length === 1) {
       const field = candidates[0]!;

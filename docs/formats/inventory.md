@@ -1,12 +1,12 @@
 # App inventory format (v0.1)
 
-The app inventory is the file a district fills in to tell RosterRadius which apps receive student and staff data, through which channel, which fields, and for whom. It is a CSV file with a header row, encoded in UTF-8, with commas between columns.
+The app inventory is the file a district fills in to tell RosterRadius which apps receive student and staff data, through which channel, which fields, and for whom. It is a CSV file with a header row, encoded in UTF-8, with commas between columns. Files saved with semicolons or tabs, as spreadsheet programs in many countries do, are also read, with a warning. Empty rows are skipped.
 
 Each row is one **flow**: one app receiving data through one channel. An app that receives data through two channels, for example Clever and an SFTP export, has two rows.
 
 The inventory never contains student data. It contains app names, vendor names, field names and how to find the students.
 
-See [`inventory-example.csv`](inventory-example.csv) for a complete example with fictional apps and vendors.
+See [`inventory-example.csv`](inventory-example.csv) for a complete example with fictional apps and vendors, and start from [`inventory-template.csv`](inventory-template.csv).
 
 ## Columns
 
@@ -26,6 +26,7 @@ Columns can appear in any order. Column names are matched without regard to case
 | `grades` | no | `KG\|01\|02` | Limits `students` to these grades, using OneRoster grade codes (`PK`, `KG`, `01` to `12`). Empty means every grade. |
 | `contract_end` | no | `2027-06-30` | Last day of the vendor's data privacy agreement, as `YYYY-MM-DD`. |
 | `deletion_days` | no | `60` | Days after the end of the agreement by which the vendor must delete the data. |
+| `subprocessors` | no | `CloudHost Inc\|TutorAI Labs [ai]` | Companies the vendor passes the data on to, as its agreement or privacy policy lists them. Mark AI model providers with `[ai]`. See [Subprocessors](#subprocessors). |
 | `notes` | no | | Free text for the district. Not used in calculations. |
 
 ## Channels
@@ -51,7 +52,7 @@ Set `channel_id` explicitly when several vendors receive files from one shared p
 
 ## Fields
 
-`fields` lists the fields the app receives, separated by `|`. Each entry is either a catalog key, such as `student.birth_date`, or a catalog label, such as `Date of birth`, matched without regard to case. The [field catalog](../../packages/core/src/catalog/fields.ts) lists all keys and labels.
+`fields` lists the fields the app receives, separated by `|`. Each entry is either a catalog key, such as `student.birth_date`, or a catalog label, such as `Date of birth`, matched without regard to case. The [accepted fields](fields.md) table lists every key and label, with the Clever and OneRoster column names.
 
 Instead of a list, `fields` can point to a file: `file:exports/mathpath_students.csv`. The tool then reads only the header row of that file and recognizes its column names. Use this for SFTP exports and uploads, where the district has the exact file the vendor receives. Fields read from a file are reported as **measured**; fields typed into the inventory are reported as **entered**.
 
@@ -72,6 +73,14 @@ When `students` is empty, it means `all` if the row has student or guardian fiel
 `all` and `teachers` are resolved with the district's OneRoster files. A `file:` value is read in memory to identify the people and is never stored. A `count:` value cannot be matched with other flows, so results that use it are given as a range (see the [methodology](../../METHODOLOGY.md#63-flows-with-counts-only)).
 
 Paths in `file:` values are relative to the folder of the inventory file.
+
+## Subprocessors
+
+`subprocessors` lists the companies that receive the data from the vendor: hosting, analytics, support tools and AI model providers. Vendors usually publish this list in their data privacy agreement or on a subprocessors page, and Illinois requires districts to publish it for each operator (105 ILCS 85/27(a)(3)).
+
+Write each name once, separated by `|`. Add `[ai]` after a provider whose AI models receive the data, for example `TutorAI Labs [ai]`. A vendor that runs its own models is not a subprocessor; record that in `notes`.
+
+In v0.1 the report lists the subprocessors of each vendor and flags the AI providers. Counting the students whose data reaches them, as potential exposure, is planned for v0.2.
 
 ## Categories
 

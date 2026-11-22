@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CsvError, parseCsv } from '../src/index.js';
+import { CsvError, CsvParser, detectSeparator, parseCsv, parseCsvWithSeparator, type CsvRecord } from '../src/index.js';
 
 describe('csv reader', () => {
   it('reads plain rows, CRLF endings and a byte order mark', () => {
@@ -30,5 +30,28 @@ describe('csv reader', () => {
     } catch (e) {
       expect((e as CsvError).line).toBe(2);
     }
+  });
+
+  it('skips rows that hold only separators, as spreadsheet programs leave them', () => {
+    expect(parseCsv('a,b\n1,2\n,\n , \n')).toEqual([
+      { line: 1, cells: ['a', 'b'] },
+      { line: 2, cells: ['1', '2'] },
+    ]);
+  });
+
+  it('detects semicolons and tabs from the header line, outside quotes', () => {
+    expect(detectSeparator('a;b;c')).toBe(';');
+    expect(detectSeparator('a\tb\tc')).toBe('\t');
+    expect(detectSeparator('"x;y",b')).toBe(',');
+    expect(parseCsvWithSeparator('a;b\n"1;5";2\n')).toEqual({ records: [{ line: 1, cells: ['a', 'b'] }, { line: 2, cells: ['1;5', '2'] }], separator: ';' });
+  });
+
+  it('detects the separator even when the header line arrives in pieces', () => {
+    const records: CsvRecord[] = [];
+    const parser = new CsvParser((r) => records.push(r));
+    for (const piece of ['ap', 'p;ven', 'dor\nX;', 'Y\n']) parser.push(piece);
+    parser.end();
+    expect(parser.detectedSeparator).toBe(';');
+    expect(records[1]?.cells).toEqual(['X', 'Y']);
   });
 });
