@@ -149,6 +149,7 @@
           "student.frl_status"
         ],
         "fieldSource": "measured",
+        "fieldsFile": "exports/mathpath_students.csv",
         "students": {
           "kind": "roster",
           "count": 450,
@@ -4071,6 +4072,10 @@
           "message": "The published list names OldReader Co, but the inventory shows no student data flowing to it. If it no longer receives data, remove it from the publication and confirm the data was deleted."
         }
       ]
+    },
+    "completeness": {
+      "complete": true,
+      "rowsLeftOut": 0
     },
     "issues": [
       {

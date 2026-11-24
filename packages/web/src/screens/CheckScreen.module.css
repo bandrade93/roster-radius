@@ -1,0 +1,112 @@
+.files,
+.issues {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.file,
+.issue {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.issue {
+  flex-wrap: wrap;
+}
+
+.file:last-child,
+.issue:last-child {
+  border-bottom: none;
+}
+
+.icon {
+  flex: none;
+  width: 22px;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.fileText {
+  flex: 1 1 400px;
+  min-width: 0;
+  font-size: var(--text-md);
+  overflow-wrap: anywhere;
+}
+
+.strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.muted {
+  margin-top: var(--space-1);
+  color: var(--color-text-muted);
+}
+
+.statusText {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.read {
+  color: var(--color-ok-text);
+}
+
+.warning {
+  color: var(--color-high-text);
+}
+
+.error {
+  color: var(--color-critical-text);
+}
+
+.unused {
+  color: var(--color-text-subtle);
+}
+
+.location {
+  margin-bottom: var(--space-1);
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.notes {
+  margin: 0;
+  padding-left: var(--space-5);
+  font-size: var(--text-md);
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.notes li + li {
+  margin-top: var(--space-2);
+}
+
+.cell {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+.blocked {
+  margin-right: auto;
+  color: var(--color-critical-text);
+}

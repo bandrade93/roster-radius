@@ -1,0 +1,30 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--space-1) 10px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.critical {
+  color: var(--color-critical-text);
+  background: var(--color-critical-bg);
+}
+
+.high {
+  color: var(--color-high-text);
+  background: var(--color-high-bg);
+}
+
+.medium {
+  color: var(--color-medium-text);
+  background: var(--color-medium-bg);
+}
+
+.info {
+  color: var(--color-info-text);
+  background: var(--color-info-bg);
+}

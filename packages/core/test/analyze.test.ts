@@ -58,6 +58,27 @@ describe('analyzing the synthetic district', async () => {
     expect(report.scenarios.find((s) => s.id === 'channel:clever')?.students.points.max).toBe(27728);
   });
 
+  it('finds a file named in the inventory by its name alone, when it was loaded without its folder', async () => {
+    const files: Record<string, string> = { ...district.files };
+    files['mathpath_students.csv'] = files['exports/mathpath_students.csv']!;
+    delete files['exports/mathpath_students.csv'];
+    const { report: moved } = await analyzeFiles(files, { today: district.today });
+
+    expect(moved.flows.find((f) => f.app === 'MathPath')?.fieldSource).toBe('measured');
+    expect(moved.issues.some((i) => i.severity === 'error')).toBe(false);
+  });
+
+  it('says whether every row was used', async () => {
+    expect(report.completeness).toEqual({ complete: true, rowsLeftOut: 0 });
+
+    const files = { ...district.files, 'inventory.csv': `${district.files['inventory.csv']}BadApp,Nobody Inc,sftp,student.unknown_field,,,all,,,,,,,\n` };
+    const { report: broken } = await analyzeFiles(files, { today: district.today });
+
+    expect(broken.completeness).toEqual({ complete: false, rowsLeftOut: 1 });
+    expect(broken.totals.apps).toBe(8);
+    expect(broken.flows).toHaveLength(8);
+  });
+
   it('collects issues from every file, with the file they come from', () => {
     // OldReader Co in the declared list is a disclosure finding, not an input issue.
     expect(report.issues.map((i) => i.file)).toEqual(['contracts', 'exports/mathpath_students.csv']);

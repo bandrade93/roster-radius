@@ -1,0 +1,13 @@
+.title {
+  font-size: var(--text-xl);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  margin-top: 6px;
+  max-width: 760px;
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+}

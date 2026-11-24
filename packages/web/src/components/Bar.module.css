@@ -1,0 +1,20 @@
+.track {
+  height: 10px;
+  min-width: 120px;
+  overflow: hidden;
+  background: var(--color-bar-track);
+  border-radius: var(--radius-pill);
+}
+
+.fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+}
+
+.accent {
+  background: var(--color-bar-fill);
+}
+
+.neutral {
+  background: var(--color-bar-fill-neutral);
+}

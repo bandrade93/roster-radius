@@ -61,6 +61,7 @@ The format follows semantic versioning. A new **minor** version only adds fields
 | `scenarios` | Every vendor and channel as a breach scenario, worst first. |
 | `contracts`, `declarations` | The contracts and the published list as read. |
 | `disclosure` | The comparison of the published list with what flows. Present only when a published list was given. |
+| `completeness` | `complete` is false when rows were left out because of errors, and `rowsLeftOut` says how many. A tool that shows or shares an incomplete report must say so. |
 | `issues` | Problems found in the input files, with the file and line. |
 
 An exposure result (in `students`, `staff` and `scenarios`) has:

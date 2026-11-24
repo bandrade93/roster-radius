@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { analyzeFiles, generateSyntheticDistrict, incidentReport, readOneRosterFiles, readOneRosterZip, sha256, Sha256 } from '../src/index.js';
+import { analyzeFiles, generateSyntheticDistrict, incidentReport, inputRole, readOneRosterFiles, readOneRosterZip, sha256, Sha256 } from '../src/index.js';
 import { zipSync, strToU8 } from 'fflate';
 
 describe('sha256', () => {
@@ -33,6 +33,23 @@ describe('traceability on the synthetic district', async () => {
     expect(byPath['exports/mathpath_students.csv']?.role).toBe('vendor_file');
     expect(byPath['clever/quizhub/students.csv']?.role).toBe('vendor_file');
     expect(report.inputs.map((f) => f.role)).toEqual([...report.inputs.map((f) => f.role)].sort((a, b) => ['inventory', 'contracts', 'declared', 'oneroster', 'vendor_file'].indexOf(a) - ['inventory', 'contracts', 'declared', 'oneroster', 'vendor_file'].indexOf(b)));
+  });
+
+  it('names the role of each file from its path', () => {
+    expect(inputRole('inventory.csv')).toBe('inventory');
+    expect(inputRole('./Contracts.csv')).toBe('contracts');
+    expect(inputRole('declared.csv')).toBe('declared');
+    expect(inputRole('oneroster\\users.csv')).toBe('oneroster');
+    expect(inputRole('users.csv')).toBe('oneroster');
+    expect(inputRole('roster.zip')).toBe('oneroster');
+    expect(inputRole('exports/mathpath_students.csv')).toBe('vendor_file');
+  });
+
+  it('adds files read in other ways, such as a OneRoster zip, to the inputs', async () => {
+    const zip = { path: 'roster.zip', role: 'oneroster' as const, sha256: 'a'.repeat(64), bytes: 10 };
+    const { report: r } = await analyzeFiles(district.files, { today: district.today, inputs: [zip] });
+    expect(r.inputs).toContainEqual(zip);
+    expect(r.inputs.filter((f) => f.role === 'oneroster').length).toBe(4);
   });
 
   it('uses the hashes of the bytes when the caller gives them', async () => {

@@ -1,6 +1,7 @@
 export {
   analyzeDistrict,
   analyzeFiles,
+  completenessOf,
   type AnalysisIssue,
   type AnalyzeInput,
   type DistrictAnalysis,

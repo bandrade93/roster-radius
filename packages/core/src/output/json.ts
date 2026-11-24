@@ -82,7 +82,7 @@ export function canRead(version: string, current: string = FORMAT_VERSION): bool
 
 /** Fields every document of each kind must have, checked when reading. */
 const REQUIRED: Record<DocumentKind, readonly string[]> = {
-  'district-report': ['methodologyVersion', 'today', 'weights', 'inputs', 'totals', 'flows', 'students', 'staff', 'alerts', 'scenarios', 'issues'],
+  'district-report': ['methodologyVersion', 'today', 'weights', 'inputs', 'totals', 'flows', 'students', 'staff', 'alerts', 'scenarios', 'completeness', 'issues'],
   'incident-report': ['methodologyVersion', 'weights', 'id', 'scope', 'notifiedOn', 'students', 'staff', 'deadlines', 'findings', 'disclaimer'],
 };
 

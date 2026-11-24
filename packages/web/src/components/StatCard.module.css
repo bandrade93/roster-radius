@@ -1,0 +1,33 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+}
+
+.label {
+  font-size: var(--text-md);
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.value {
+  font-size: var(--text-stat);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.note {
+  font-size: var(--text-sm);
+  color: var(--color-text-subtle);
+}

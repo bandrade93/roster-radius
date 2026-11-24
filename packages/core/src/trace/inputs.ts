@@ -1,4 +1,4 @@
-import type { TextSource } from '../oneroster/read.js';
+import { ONEROSTER_FILES, type TextSource } from '../oneroster/read.js';
 import { Sha256 } from './sha256.js';
 
 /**
@@ -18,6 +18,20 @@ export interface InputFile {
   readonly sha256: string;
   /** Size of what was hashed, in bytes. */
   readonly bytes: number;
+}
+
+const NAMED: Readonly<Record<string, InputFile['role']>> = { 'inventory.csv': 'inventory', 'contracts.csv': 'contracts', 'declared.csv': 'declared' };
+
+/** The role a file plays in an analysis, from its path relative to the district's folder. */
+export function inputRole(path: string): InputFile['role'] {
+  const normalized = path.replace(/\\/g, '/').replace(/^(\.\/)+/, '');
+  const named = NAMED[normalized.toLowerCase()];
+  if (named) return named;
+
+  const base = (normalized.split('/').pop() ?? normalized).toLowerCase();
+  if (base.endsWith('.zip') || (ONEROSTER_FILES as readonly string[]).includes(base)) return 'oneroster';
+
+  return 'vendor_file';
 }
 
 /** Hashes a source while it is read, and calls `done` once it was read to the end. */

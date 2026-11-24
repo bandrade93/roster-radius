@@ -52,9 +52,11 @@ export interface AnalyzeInput {
   readonly expiringWithinDays?: number;
   /**
    * Hashes of the input files' bytes, when the caller read them. They replace
-   * the hashes computed from the text for the same path. The inventory,
-   * contracts and declared list are named inventory.csv, contracts.csv and
-   * declared.csv.
+   * the hashes computed from the text for the same path. A OneRoster file the
+   * analysis did not read as text, such as a zip, is added. Other files given
+   * here but not read are left out. The
+   * inventory, contracts and declared list are named inventory.csv,
+   * contracts.csv and declared.csv.
    */
   readonly inputs?: readonly InputFile[];
 }
@@ -78,6 +80,8 @@ export interface FlowSummary {
   readonly category?: AppCategory;
   readonly fields: readonly FieldKey[];
   readonly fieldSource: ResolvedRow['fieldSource'];
+  /** The file the fields were read from, when they were measured. */
+  readonly fieldsFile?: string;
   readonly students: PeopleResolution;
   readonly staff: PeopleResolution;
   readonly subprocessors: InventoryRow['subprocessors'];
@@ -128,6 +132,12 @@ export interface DistrictReport {
   /** Contracts used, including those built from the inventory's contract columns. */
   readonly contracts: readonly Contract[];
   readonly declarations: readonly Declaration[];
+  /**
+   * Whether every row of every file was used. Rows with errors are left out of
+   * the results, so a report with errors is incomplete and must say so
+   * wherever it is shown or shared.
+   */
+  readonly completeness: { readonly complete: boolean; readonly rowsLeftOut: number };
   /** Published list versus what flows. Present only when a declared list was given. */
   readonly disclosure?: DisclosureResult;
   readonly issues: readonly AnalysisIssue[];
@@ -137,6 +147,13 @@ export interface DistrictAnalysis {
   readonly report: DistrictReport;
   /** In memory only: resolved flows with identifiers. */
   readonly flows: readonly ResolvedFlow[];
+}
+
+/** Each error leaves its row out, or as many rows as it repeats in. */
+export function completenessOf(issues: readonly AnalysisIssue[]): DistrictReport['completeness'] {
+  const rowsLeftOut = issues.filter((i) => i.severity === 'error').reduce((n, i) => n + (i.count ?? 1), 0);
+
+  return { complete: rowsLeftOut === 0, rowsLeftOut };
 }
 
 const isStudentField = (k: FieldKey) => k.startsWith('student.') || k.startsWith('guardian.');
@@ -256,15 +273,17 @@ export async function analyzeDistrict(input: AnalyzeInput): Promise<DistrictAnal
   };
   const given = new Map((input.inputs ?? []).map((f) => [f.path, f]));
   const ROLES: readonly InputFile['role'][] = ['inventory', 'contracts', 'declared', 'oneroster', 'vendor_file'];
-  const inputs = [
+  const computed = [
     text('inventory.csv', 'inventory', input.inventory),
     ...(input.contracts !== undefined ? [text('contracts.csv', 'contracts', input.contracts)] : []),
     ...(input.declared !== undefined ? [text('declared.csv', 'declared', input.declared)] : []),
     ...roster.hashes.map((h): InputFile => ({ ...h, role: 'oneroster' })),
     ...vendorFiles.values(),
   ]
-    .map((f) => given.get(f.path) ?? f)
-    .sort((a, b) => ROLES.indexOf(a.role) - ROLES.indexOf(b.role) || a.path.localeCompare(b.path));
+    .map((f) => given.get(f.path) ?? f);
+  const known = new Set(computed.map((f) => f.path));
+  const rosterSources = [...given.values()].filter((f) => f.role === 'oneroster' && !known.has(f.path));
+  const inputs = [...computed, ...rosterSources].sort((a, b) => ROLES.indexOf(a.role) - ROLES.indexOf(b.role) || a.path.localeCompare(b.path));
 
   const report: DistrictReport = {
     methodologyVersion: METHODOLOGY_VERSION,
@@ -289,6 +308,7 @@ export async function analyzeDistrict(input: AnalyzeInput): Promise<DistrictAnal
       ...(r.row.category ? { category: r.row.category } : {}),
       fields: r.flow.fields,
       fieldSource: r.fieldSource,
+      ...(r.row.fieldSource.kind === 'file' ? { fieldsFile: normalizePath(r.row.fieldSource.path) } : {}),
       students: r.students,
       staff: r.staff,
       subprocessors: r.row.subprocessors,
@@ -306,6 +326,7 @@ export async function analyzeDistrict(input: AnalyzeInput): Promise<DistrictAnal
     ...(input.declared !== undefined
       ? { disclosure: compareDisclosure({ flows, declarations, ...(input.weights ? { weights: input.weights } : {}), maxStudents: roster.students.size }) }
       : {}),
+    completeness: completenessOf(issues),
     issues,
   };
   return { report, flows };
@@ -315,24 +336,41 @@ export async function analyzeDistrict(input: AnalyzeInput): Promise<DistrictAnal
  * Analyzes a district from its files, by path: `inventory.csv`, optional
  * `contracts.csv` and `declared.csv`, and the OneRoster files (`orgs.csv`,
  * `users.csv`, `manifest.csv`) in any folder, such as `oneroster/`. Any other
- * path is available to the inventory's `file:` values. Useful for a folder or
+ * path is available to the inventory's `file:` values, which also find a file
+ * by its name alone when only one file has that name. Useful for a folder or
  * the sample district.
  */
 export async function analyzeFiles(
   files: Readonly<Record<string, string>>,
-  options: { readonly today: string; readonly weights?: WeightOverrides; readonly expiringWithinDays?: number; readonly inputs?: readonly InputFile[] },
+  options: {
+    readonly today: string;
+    readonly weights?: WeightOverrides;
+    readonly expiringWithinDays?: number;
+    readonly inputs?: readonly InputFile[];
+    /** A roster already read, such as from a OneRoster zip. When given, OneRoster files among `files` are not read. */
+    readonly roster?: Roster;
+  },
 ): Promise<DistrictAnalysis> {
   const byPath = new Map(Object.entries(files).map(([p, c]) => [normalizePath(p), c]));
   const base = (p: string) => (p.split('/').pop() ?? p).toLowerCase();
   const inventory = byPath.get('inventory.csv');
   if (inventory === undefined) throw new Error('inventory.csv was not provided.');
-  const roster = await readOneRosterFiles([...byPath].filter(([p]) => (ONEROSTER_FILES as readonly string[]).includes(base(p)) && p.includes('/')));
+  // A file named in the inventory is found by its path, or by its name alone when one loaded file has that name.
+  const byName = (p: string): string | undefined => {
+    const name = base(normalizePath(p));
+    const matches = [...byPath.keys()].filter((k) => base(k) === name);
+
+    return matches.length === 1 ? byPath.get(matches[0]!) : undefined;
+  };
+    const { roster: given, ...rest } = options;
+  const roster = given ?? (await readOneRosterFiles([...byPath].filter(([p]) => (ONEROSTER_FILES as readonly string[]).includes(base(p)) && p.includes('/'))));
+
   return analyzeDistrict({
     inventory,
     ...(byPath.has('contracts.csv') ? { contracts: byPath.get('contracts.csv')! } : {}),
     ...(byPath.has('declared.csv') ? { declared: byPath.get('declared.csv')! } : {}),
     roster,
-    openFile: (p) => byPath.get(normalizePath(p)),
-    ...options,
+    openFile: (p) => byPath.get(normalizePath(p)) ?? byName(p),
+    ...rest,
   });
 }

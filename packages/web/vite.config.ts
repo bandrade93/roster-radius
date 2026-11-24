@@ -11,6 +11,8 @@ export default defineConfig({
     // The engine is used from its source until it has its own build (ADR 0002).
     alias: { '@roster-radius/core': fileURLToPath(new URL('../core/src/index.ts', import.meta.url)) },
   },
+  // The templates in docs/formats are offered as downloads from the page.
+  server: { fs: { allow: ['../..'] } },
   worker: { format: 'es' },
   build: { target: 'es2022', sourcemap: true },
 });
