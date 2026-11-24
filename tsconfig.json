@@ -13,7 +13,7 @@
     ]
   },
   "include": [
-    "packages/*/src",
-    "packages/*/test"
+    "packages/core/src",
+    "packages/core/test"
   ]
 }

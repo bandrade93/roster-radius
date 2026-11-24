@@ -1,0 +1,389 @@
+{
+  "format": "rosterradius",
+  "kind": "incident-report",
+  "formatVersion": "0.1.0",
+  "generator": {
+    "name": "@roster-radius/core",
+    "version": "0.0.1"
+  },
+  "data": {
+    "methodologyVersion": "0.1",
+    "weights": {
+      "organizational": 1,
+      "identifier": 3,
+      "academic": 3,
+      "birth": 4,
+      "demographic": 4,
+      "behavioral": 4,
+      "credential": 5,
+      "special_status": 5,
+      "location": 5
+    },
+    "id": "vendor:Acme Learning",
+    "scope": {
+      "kind": "vendor",
+      "vendorId": "Acme Learning"
+    },
+    "notifiedOn": "2026-12-15",
+    "state": "IL",
+    "vendors": [
+      "Acme Learning"
+    ],
+    "apps": [
+      "MathPath",
+      "ReadWell"
+    ],
+    "channels": [
+      "clever",
+      "sftp:Acme Learning"
+    ],
+    "students": {
+      "people": {
+        "min": 1140,
+        "max": 1140,
+        "exact": true
+      },
+      "byClass": {
+        "organizational": {
+          "min": 1140,
+          "max": 1140,
+          "exact": true
+        },
+        "identifier": {
+          "min": 1140,
+          "max": 1140,
+          "exact": true
+        },
+        "academic": {
+          "min": 0,
+          "max": 0,
+          "exact": true
+        },
+        "birth": {
+          "min": 1140,
+          "max": 1140,
+          "exact": true
+        },
+        "demographic": {
+          "min": 0,
+          "max": 0,
+          "exact": true
+        },
+        "behavioral": {
+          "min": 0,
+          "max": 0,
+          "exact": true
+        },
+        "credential": {
+          "min": 0,
+          "max": 0,
+          "exact": true
+        },
+        "special_status": {
+          "min": 1140,
+          "max": 1140,
+          "exact": true
+        },
+        "location": {
+          "min": 450,
+          "max": 450,
+          "exact": true
+        }
+      },
+      "byField": [
+        {
+          "field": "student.birth_date",
+          "people": {
+            "min": 1140,
+            "max": 1140,
+            "exact": true
+          },
+          "apps": [
+            "MathPath",
+            "ReadWell"
+          ],
+          "lines": [
+            2,
+            3
+          ]
+        },
+        {
+          "field": "student.grade_level",
+          "people": {
+            "min": 1140,
+            "max": 1140,
+            "exact": true
+          },
+          "apps": [
+            "MathPath",
+            "ReadWell"
+          ],
+          "lines": [
+            2,
+            3
+          ]
+        },
+        {
+          "field": "student.school",
+          "people": {
+            "min": 1140,
+            "max": 1140,
+            "exact": true
+          },
+          "apps": [
+            "MathPath",
+            "ReadWell"
+          ],
+          "lines": [
+            2,
+            3
+          ]
+        },
+        {
+          "field": "student.first_name",
+          "people": {
+            "min": 1140,
+            "max": 1140,
+            "exact": true
+          },
+          "apps": [
+            "MathPath",
+            "ReadWell"
+          ],
+          "lines": [
+            2,
+            3
+          ]
+        },
+        {
+          "field": "student.sis_id",
+          "people": {
+            "min": 1140,
+            "max": 1140,
+            "exact": true
+          },
+          "apps": [
+            "MathPath",
+            "ReadWell"
+          ],
+          "lines": [
+            2,
+            3
+          ]
+        },
+        {
+          "field": "student.last_name",
+          "people": {
+            "min": 1140,
+            "max": 1140,
+            "exact": true
+          },
+          "apps": [
+            "MathPath",
+            "ReadWell"
+          ],
+          "lines": [
+            2,
+            3
+          ]
+        },
+        {
+          "field": "student.iep_status",
+          "people": {
+            "min": 690,
+            "max": 690,
+            "exact": true
+          },
+          "apps": [
+            "ReadWell"
+          ],
+          "lines": [
+            2
+          ]
+        },
+        {
+          "field": "student.frl_status",
+          "people": {
+            "min": 450,
+            "max": 450,
+            "exact": true
+          },
+          "apps": [
+            "MathPath"
+          ],
+          "lines": [
+            3
+          ]
+        },
+        {
+          "field": "student.address",
+          "people": {
+            "min": 450,
+            "max": 450,
+            "exact": true
+          },
+          "apps": [
+            "MathPath"
+          ],
+          "lines": [
+            3
+          ]
+        }
+      ],
+      "notListed": 0,
+      "share": 0.6867469879518072,
+      "lines": [
+        2,
+        3
+      ]
+    },
+    "staff": {
+      "people": {
+        "min": 77,
+        "max": 77,
+        "exact": true
+      },
+      "byClass": {
+        "organizational": {
+          "min": 0,
+          "max": 0,
+          "exact": true
+        },
+        "identifier": {
+          "min": 77,
+          "max": 77,
+          "exact": true
+        },
+        "academic": {
+          "min": 0,
+          "max": 0,
+          "exact": true
+        },
+        "birth": {
+          "min": 0,
+          "max": 0,
+          "exact": true
+        },
+        "demographic": {
+          "min": 0,
+          "max": 0,
+          "exact": true
+        },
+        "behavioral": {
+          "min": 0,
+          "max": 0,
+          "exact": true
+        },
+        "credential": {
+          "min": 0,
+          "max": 0,
+          "exact": true
+        },
+        "special_status": {
+          "min": 0,
+          "max": 0,
+          "exact": true
+        },
+        "location": {
+          "min": 0,
+          "max": 0,
+          "exact": true
+        }
+      },
+      "byField": [
+        {
+          "field": "staff.email",
+          "people": {
+            "min": 77,
+            "max": 77,
+            "exact": true
+          },
+          "apps": [
+            "ReadWell"
+          ],
+          "lines": [
+            2
+          ]
+        },
+        {
+          "field": "staff.first_name",
+          "people": {
+            "min": 77,
+            "max": 77,
+            "exact": true
+          },
+          "apps": [
+            "ReadWell"
+          ],
+          "lines": [
+            2
+          ]
+        },
+        {
+          "field": "staff.id",
+          "people": {
+            "min": 77,
+            "max": 77,
+            "exact": true
+          },
+          "apps": [
+            "ReadWell"
+          ],
+          "lines": [
+            2
+          ]
+        },
+        {
+          "field": "staff.last_name",
+          "people": {
+            "min": 77,
+            "max": 77,
+            "exact": true
+          },
+          "apps": [
+            "ReadWell"
+          ],
+          "lines": [
+            2
+          ]
+        }
+      ],
+      "notListed": 0,
+      "share": 0.9058823529411765,
+      "lines": [
+        2
+      ]
+    },
+    "deadlines": [
+      {
+        "duty": {
+          "id": "il.operator_notice",
+          "party": "vendor",
+          "duty": "The operator notifies the school of a breach of students’ covered information, in the most expedient time possible and without unreasonable delay.",
+          "days": 30,
+          "startsAt": "the operator determines that a breach occurred",
+          "citation": "105 ILCS 85/15(5)"
+        }
+      },
+      {
+        "duty": {
+          "id": "il.parent_notice",
+          "party": "district",
+          "duty": "The school notifies the parents of the affected students. A law enforcement agency may ask in writing for a delay that would otherwise interfere with a criminal investigation.",
+          "days": 30,
+          "startsAt": "the school receives the operator’s notice or determines that a breach occurred",
+          "citation": "105 ILCS 85/27(d)"
+        },
+        "dueOn": "2027-01-14"
+      }
+    ],
+    "findings": [
+      {
+        "id": "il.breach_list",
+        "text": "The breach affects about 68.7% of enrollment, so it must be included in the list of breaches the district publishes.",
+        "citation": "105 ILCS 85/27(a)(5)"
+      }
+    ],
+    "disclaimer": "This is a summary of state law for orientation, not legal advice. Other laws, including federal law and general state breach laws, may also apply. Confirm with the district’s legal counsel."
+  }
+}

@@ -1,0 +1,4091 @@
+{
+  "format": "rosterradius",
+  "kind": "district-report",
+  "formatVersion": "0.1.0",
+  "generator": {
+    "name": "@roster-radius/core",
+    "version": "0.0.1"
+  },
+  "data": {
+    "methodologyVersion": "0.1",
+    "today": "2026-11-17",
+    "weights": {
+      "organizational": 1,
+      "identifier": 3,
+      "academic": 3,
+      "birth": 4,
+      "demographic": 4,
+      "behavioral": 4,
+      "credential": 5,
+      "special_status": 5,
+      "location": 5
+    },
+    "inputs": [
+      {
+        "path": "inventory.csv",
+        "role": "inventory",
+        "sha256": "0499749a54e8af036123c2a687586e9c105a6d86e76bb18ab42f900dc947f8f2",
+        "bytes": 1914
+      },
+      {
+        "path": "contracts.csv",
+        "role": "contracts",
+        "sha256": "600100012b62c473ec4e0400a01c8e705a0a4eee3e9aa9e518f94493ac6a4675",
+        "bytes": 711
+      },
+      {
+        "path": "declared.csv",
+        "role": "declared",
+        "sha256": "e8ddace209e75f6aba3b8fdc84b5aea9a317efc6161062afe014ab5d38a3b66c",
+        "bytes": 881
+      },
+      {
+        "path": "oneroster/manifest.csv",
+        "sha256": "eb05992041cf4c79a34c02dbbaa8eec6ae6745e1533f5a4d498befffd50a9136",
+        "bytes": 148,
+        "role": "oneroster"
+      },
+      {
+        "path": "oneroster/orgs.csv",
+        "sha256": "4d3d1b3867e53977ed56a4398159e41e89fcb1e1117a613329576d37dc02bb02",
+        "bytes": 387,
+        "role": "oneroster"
+      },
+      {
+        "path": "oneroster/users.csv",
+        "sha256": "679905ad8c43dc70daf00453d5b7151874ae172bc50cda17e57e9514dae3cd32",
+        "bytes": 209973,
+        "role": "oneroster"
+      },
+      {
+        "path": "clever/quizhub/students.csv",
+        "role": "vendor_file",
+        "sha256": "b088fd2f19d8d67f5311f382d703d7500e919d225e3075c604f8862a62a40e6f",
+        "bytes": 3886
+      },
+      {
+        "path": "exports/mathpath_students.csv",
+        "role": "vendor_file",
+        "sha256": "090e291eddbe41019d55f7a35dce94b3607e094d5d9481a0776a9cc0c7326587",
+        "bytes": 36571
+      }
+    ],
+    "totals": {
+      "schools": 4,
+      "students": 1660,
+      "staff": 85,
+      "apps": 8,
+      "vendors": 7,
+      "channels": 6,
+      "studentsReached": {
+        "min": 1660,
+        "max": 1660,
+        "exact": false
+      },
+      "staffReached": {
+        "min": 77,
+        "max": 77,
+        "exact": true
+      }
+    },
+    "flows": [
+      {
+        "line": 2,
+        "app": "ReadWell",
+        "vendor": "Acme Learning",
+        "channel": "clever",
+        "category": "instructional_content",
+        "fields": [
+          "student.sis_id",
+          "student.first_name",
+          "student.last_name",
+          "student.grade_level",
+          "student.school",
+          "student.birth_date",
+          "student.iep_status",
+          "staff.id",
+          "staff.first_name",
+          "staff.last_name",
+          "staff.email"
+        ],
+        "fieldSource": "entered",
+        "students": {
+          "kind": "roster",
+          "count": 690,
+          "source": "measured",
+          "matchedBy": "sourcedId"
+        },
+        "staff": {
+          "kind": "roster",
+          "count": 77,
+          "source": "measured",
+          "matchedBy": "sourcedId"
+        },
+        "subprocessors": [
+          {
+            "name": "CloudHost Inc",
+            "ai": false
+          },
+          {
+            "name": "TutorAI Labs",
+            "ai": true
+          }
+        ]
+      },
+      {
+        "line": 3,
+        "app": "MathPath",
+        "vendor": "Acme Learning",
+        "channel": "sftp:Acme Learning",
+        "category": "instructional_content",
+        "fields": [
+          "student.sis_id",
+          "student.first_name",
+          "student.last_name",
+          "student.birth_date",
+          "student.grade_level",
+          "student.school",
+          "student.address",
+          "student.frl_status"
+        ],
+        "fieldSource": "measured",
+        "students": {
+          "kind": "roster",
+          "count": 450,
+          "source": "measured",
+          "matchedBy": "sourcedId"
+        },
+        "staff": {
+          "kind": "none",
+          "count": 0,
+          "source": "entered"
+        },
+        "subprocessors": [
+          {
+            "name": "CloudHost Inc",
+            "ai": false
+          },
+          {
+            "name": "TutorAI Labs",
+            "ai": true
+          }
+        ]
+      },
+      {
+        "line": 4,
+        "app": "LunchLine",
+        "vendor": "Food Services Co",
+        "channel": "sftp:Food Services Co",
+        "category": "nutrition",
+        "fields": [
+          "student.sis_id",
+          "student.student_number",
+          "student.first_name",
+          "student.last_name",
+          "student.school",
+          "student.grade_level",
+          "student.frl_status"
+        ],
+        "fieldSource": "entered",
+        "students": {
+          "kind": "roster",
+          "count": 1660,
+          "source": "measured",
+          "matchedBy": "sourcedId"
+        },
+        "staff": {
+          "kind": "none",
+          "count": 0,
+          "source": "entered"
+        },
+        "subprocessors": []
+      },
+      {
+        "line": 5,
+        "app": "QuizHub",
+        "vendor": "QuizHub Inc",
+        "channel": "clever",
+        "fields": [
+          "student.first_name",
+          "student.last_name",
+          "student.email"
+        ],
+        "fieldSource": "entered",
+        "students": {
+          "kind": "file",
+          "count": 116,
+          "source": "measured",
+          "path": "clever/quizhub/students.csv",
+          "idColumn": "Student_id",
+          "matchedBy": "identifier",
+          "unmatched": 0
+        },
+        "staff": {
+          "kind": "none",
+          "count": 0,
+          "source": "entered"
+        },
+        "subprocessors": [
+          {
+            "name": "QuizAnalytics Co",
+            "ai": false
+          }
+        ]
+      },
+      {
+        "line": 6,
+        "app": "FamilyTalk",
+        "vendor": "Family Messaging LLC",
+        "channel": "manual_upload:Family Messaging LLC",
+        "category": "family_communication",
+        "fields": [
+          "student.first_name",
+          "student.last_name",
+          "guardian.name",
+          "guardian.phone",
+          "guardian.email",
+          "student.home_language"
+        ],
+        "fieldSource": "entered",
+        "students": {
+          "kind": "count",
+          "count": 1600,
+          "source": "entered"
+        },
+        "staff": {
+          "kind": "none",
+          "count": 0,
+          "source": "entered"
+        },
+        "subprocessors": [
+          {
+            "name": "TextRelay Co",
+            "ai": false
+          }
+        ]
+      },
+      {
+        "line": 7,
+        "app": "ClassCloud",
+        "vendor": "Classroom Cloud Inc",
+        "channel": "clever",
+        "category": "learning_management",
+        "fields": [
+          "student.sis_id",
+          "student.first_name",
+          "student.last_name",
+          "student.email",
+          "student.grade_level",
+          "student.class_enrollments",
+          "staff.id",
+          "staff.first_name",
+          "staff.last_name",
+          "staff.email"
+        ],
+        "fieldSource": "entered",
+        "students": {
+          "kind": "roster",
+          "count": 970,
+          "source": "measured",
+          "matchedBy": "sourcedId"
+        },
+        "staff": {
+          "kind": "roster",
+          "count": 50,
+          "source": "measured",
+          "matchedBy": "sourcedId"
+        },
+        "subprocessors": [
+          {
+            "name": "CloudHost Inc",
+            "ai": false
+          },
+          {
+            "name": "InsightEngine AI",
+            "ai": true
+          }
+        ]
+      },
+      {
+        "line": 8,
+        "app": "ShelfScan",
+        "vendor": "Library Systems Co",
+        "channel": "sftp:Library Systems Co",
+        "category": "library",
+        "fields": [
+          "student.sis_id",
+          "student.first_name",
+          "student.last_name",
+          "student.username",
+          "student.password",
+          "student.school"
+        ],
+        "fieldSource": "entered",
+        "students": {
+          "kind": "roster",
+          "count": 1660,
+          "source": "measured",
+          "matchedBy": "sourcedId"
+        },
+        "staff": {
+          "kind": "none",
+          "count": 0,
+          "source": "entered"
+        },
+        "subprocessors": []
+      },
+      {
+        "line": 9,
+        "app": "RouteRider",
+        "vendor": "Transit Apps LLC",
+        "channel": "sftp:Transit Apps LLC",
+        "category": "transportation",
+        "fields": [
+          "student.sis_id",
+          "student.first_name",
+          "student.last_name",
+          "student.address",
+          "student.transportation",
+          "student.school"
+        ],
+        "fieldSource": "entered",
+        "students": {
+          "kind": "roster",
+          "count": 1660,
+          "source": "measured",
+          "matchedBy": "sourcedId"
+        },
+        "staff": {
+          "kind": "none",
+          "count": 0,
+          "source": "entered"
+        },
+        "subprocessors": [
+          {
+            "name": "MapTiles Inc",
+            "ai": false
+          }
+        ]
+      }
+    ],
+    "students": {
+      "byVendor": [
+        {
+          "id": "Transit Apps LLC",
+          "population": "students",
+          "people": {
+            "min": 1660,
+            "max": 1660,
+            "exact": true
+          },
+          "points": {
+            "min": 33200,
+            "max": 33200,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "identifier": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.address",
+            "student.first_name",
+            "student.last_name",
+            "student.school",
+            "student.sis_id",
+            "student.transportation"
+          ],
+          "ignoredFields": [],
+          "topClass": "location",
+          "flowsWithoutScope": 0,
+          "lines": [
+            9
+          ]
+        },
+        {
+          "id": "Food Services Co",
+          "population": "students",
+          "people": {
+            "min": 1660,
+            "max": 1660,
+            "exact": true
+          },
+          "points": {
+            "min": 31540,
+            "max": 31540,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "identifier": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.first_name",
+            "student.frl_status",
+            "student.grade_level",
+            "student.last_name",
+            "student.school",
+            "student.sis_id",
+            "student.student_number"
+          ],
+          "ignoredFields": [],
+          "topClass": "special_status",
+          "flowsWithoutScope": 0,
+          "lines": [
+            4
+          ]
+        },
+        {
+          "id": "Family Messaging LLC",
+          "population": "students",
+          "people": {
+            "min": 1600,
+            "max": 1600,
+            "exact": false
+          },
+          "points": {
+            "min": 30400,
+            "max": 30400,
+            "exact": false
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            },
+            "identifier": {
+              "min": 1600,
+              "max": 1600,
+              "exact": false
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            },
+            "demographic": {
+              "min": 1600,
+              "max": 1600,
+              "exact": false
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            }
+          },
+          "fields": [
+            "guardian.email",
+            "guardian.name",
+            "guardian.phone",
+            "student.first_name",
+            "student.home_language",
+            "student.last_name"
+          ],
+          "ignoredFields": [],
+          "topClass": "demographic",
+          "flowsWithoutScope": 0,
+          "lines": [
+            6
+          ]
+        },
+        {
+          "id": "Library Systems Co",
+          "population": "students",
+          "people": {
+            "min": 1660,
+            "max": 1660,
+            "exact": true
+          },
+          "points": {
+            "min": 29880,
+            "max": 29880,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "identifier": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.first_name",
+            "student.last_name",
+            "student.password",
+            "student.school",
+            "student.sis_id",
+            "student.username"
+          ],
+          "ignoredFields": [],
+          "topClass": "credential",
+          "flowsWithoutScope": 0,
+          "lines": [
+            8
+          ]
+        },
+        {
+          "id": "Acme Learning",
+          "population": "students",
+          "people": {
+            "min": 1140,
+            "max": 1140,
+            "exact": true
+          },
+          "points": {
+            "min": 25050,
+            "max": 25050,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 1140,
+              "max": 1140,
+              "exact": true
+            },
+            "identifier": {
+              "min": 1140,
+              "max": 1140,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 1140,
+              "max": 1140,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 1140,
+              "max": 1140,
+              "exact": true
+            },
+            "location": {
+              "min": 450,
+              "max": 450,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.address",
+            "student.birth_date",
+            "student.first_name",
+            "student.frl_status",
+            "student.grade_level",
+            "student.iep_status",
+            "student.last_name",
+            "student.school",
+            "student.sis_id"
+          ],
+          "ignoredFields": [
+            "staff.email",
+            "staff.first_name",
+            "staff.id",
+            "staff.last_name"
+          ],
+          "topClass": "special_status",
+          "flowsWithoutScope": 0,
+          "lines": [
+            2,
+            3
+          ]
+        },
+        {
+          "id": "Classroom Cloud Inc",
+          "population": "students",
+          "people": {
+            "min": 970,
+            "max": 970,
+            "exact": true
+          },
+          "points": {
+            "min": 13580,
+            "max": 13580,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 970,
+              "max": 970,
+              "exact": true
+            },
+            "identifier": {
+              "min": 970,
+              "max": 970,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.class_enrollments",
+            "student.email",
+            "student.first_name",
+            "student.grade_level",
+            "student.last_name",
+            "student.sis_id"
+          ],
+          "ignoredFields": [
+            "staff.email",
+            "staff.first_name",
+            "staff.id",
+            "staff.last_name"
+          ],
+          "topClass": "identifier",
+          "flowsWithoutScope": 0,
+          "lines": [
+            7
+          ]
+        },
+        {
+          "id": "QuizHub Inc",
+          "population": "students",
+          "people": {
+            "min": 116,
+            "max": 116,
+            "exact": true
+          },
+          "points": {
+            "min": 1044,
+            "max": 1044,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "identifier": {
+              "min": 116,
+              "max": 116,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.email",
+            "student.first_name",
+            "student.last_name"
+          ],
+          "ignoredFields": [],
+          "topClass": "identifier",
+          "flowsWithoutScope": 0,
+          "lines": [
+            5
+          ]
+        }
+      ],
+      "byApp": [
+        {
+          "id": "RouteRider",
+          "population": "students",
+          "people": {
+            "min": 1660,
+            "max": 1660,
+            "exact": true
+          },
+          "points": {
+            "min": 33200,
+            "max": 33200,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "identifier": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.address",
+            "student.first_name",
+            "student.last_name",
+            "student.school",
+            "student.sis_id",
+            "student.transportation"
+          ],
+          "ignoredFields": [],
+          "topClass": "location",
+          "flowsWithoutScope": 0,
+          "lines": [
+            9
+          ]
+        },
+        {
+          "id": "LunchLine",
+          "population": "students",
+          "people": {
+            "min": 1660,
+            "max": 1660,
+            "exact": true
+          },
+          "points": {
+            "min": 31540,
+            "max": 31540,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "identifier": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.first_name",
+            "student.frl_status",
+            "student.grade_level",
+            "student.last_name",
+            "student.school",
+            "student.sis_id",
+            "student.student_number"
+          ],
+          "ignoredFields": [],
+          "topClass": "special_status",
+          "flowsWithoutScope": 0,
+          "lines": [
+            4
+          ]
+        },
+        {
+          "id": "FamilyTalk",
+          "population": "students",
+          "people": {
+            "min": 1600,
+            "max": 1600,
+            "exact": false
+          },
+          "points": {
+            "min": 30400,
+            "max": 30400,
+            "exact": false
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            },
+            "identifier": {
+              "min": 1600,
+              "max": 1600,
+              "exact": false
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            },
+            "demographic": {
+              "min": 1600,
+              "max": 1600,
+              "exact": false
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            }
+          },
+          "fields": [
+            "guardian.email",
+            "guardian.name",
+            "guardian.phone",
+            "student.first_name",
+            "student.home_language",
+            "student.last_name"
+          ],
+          "ignoredFields": [],
+          "topClass": "demographic",
+          "flowsWithoutScope": 0,
+          "lines": [
+            6
+          ]
+        },
+        {
+          "id": "ShelfScan",
+          "population": "students",
+          "people": {
+            "min": 1660,
+            "max": 1660,
+            "exact": true
+          },
+          "points": {
+            "min": 29880,
+            "max": 29880,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "identifier": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.first_name",
+            "student.last_name",
+            "student.password",
+            "student.school",
+            "student.sis_id",
+            "student.username"
+          ],
+          "ignoredFields": [],
+          "topClass": "credential",
+          "flowsWithoutScope": 0,
+          "lines": [
+            8
+          ]
+        },
+        {
+          "id": "ReadWell",
+          "population": "students",
+          "people": {
+            "min": 690,
+            "max": 690,
+            "exact": true
+          },
+          "points": {
+            "min": 13800,
+            "max": 13800,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 690,
+              "max": 690,
+              "exact": true
+            },
+            "identifier": {
+              "min": 690,
+              "max": 690,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 690,
+              "max": 690,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 690,
+              "max": 690,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.birth_date",
+            "student.first_name",
+            "student.grade_level",
+            "student.iep_status",
+            "student.last_name",
+            "student.school",
+            "student.sis_id"
+          ],
+          "ignoredFields": [
+            "staff.email",
+            "staff.first_name",
+            "staff.id",
+            "staff.last_name"
+          ],
+          "topClass": "special_status",
+          "flowsWithoutScope": 0,
+          "lines": [
+            2
+          ]
+        },
+        {
+          "id": "ClassCloud",
+          "population": "students",
+          "people": {
+            "min": 970,
+            "max": 970,
+            "exact": true
+          },
+          "points": {
+            "min": 13580,
+            "max": 13580,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 970,
+              "max": 970,
+              "exact": true
+            },
+            "identifier": {
+              "min": 970,
+              "max": 970,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.class_enrollments",
+            "student.email",
+            "student.first_name",
+            "student.grade_level",
+            "student.last_name",
+            "student.sis_id"
+          ],
+          "ignoredFields": [
+            "staff.email",
+            "staff.first_name",
+            "staff.id",
+            "staff.last_name"
+          ],
+          "topClass": "identifier",
+          "flowsWithoutScope": 0,
+          "lines": [
+            7
+          ]
+        },
+        {
+          "id": "MathPath",
+          "population": "students",
+          "people": {
+            "min": 450,
+            "max": 450,
+            "exact": true
+          },
+          "points": {
+            "min": 11250,
+            "max": 11250,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 450,
+              "max": 450,
+              "exact": true
+            },
+            "identifier": {
+              "min": 450,
+              "max": 450,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 450,
+              "max": 450,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 450,
+              "max": 450,
+              "exact": true
+            },
+            "location": {
+              "min": 450,
+              "max": 450,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.address",
+            "student.birth_date",
+            "student.first_name",
+            "student.frl_status",
+            "student.grade_level",
+            "student.last_name",
+            "student.school",
+            "student.sis_id"
+          ],
+          "ignoredFields": [],
+          "topClass": "special_status",
+          "flowsWithoutScope": 0,
+          "lines": [
+            3
+          ]
+        },
+        {
+          "id": "QuizHub",
+          "population": "students",
+          "people": {
+            "min": 116,
+            "max": 116,
+            "exact": true
+          },
+          "points": {
+            "min": 1044,
+            "max": 1044,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "identifier": {
+              "min": 116,
+              "max": 116,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.email",
+            "student.first_name",
+            "student.last_name"
+          ],
+          "ignoredFields": [],
+          "topClass": "identifier",
+          "flowsWithoutScope": 0,
+          "lines": [
+            5
+          ]
+        }
+      ]
+    },
+    "staff": {
+      "byVendor": [
+        {
+          "id": "Acme Learning",
+          "population": "staff",
+          "people": {
+            "min": 77,
+            "max": 77,
+            "exact": true
+          },
+          "points": {
+            "min": 924,
+            "max": 924,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "identifier": {
+              "min": 77,
+              "max": 77,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "staff.email",
+            "staff.first_name",
+            "staff.id",
+            "staff.last_name"
+          ],
+          "ignoredFields": [
+            "student.address",
+            "student.birth_date",
+            "student.first_name",
+            "student.frl_status",
+            "student.grade_level",
+            "student.iep_status",
+            "student.last_name",
+            "student.school",
+            "student.sis_id"
+          ],
+          "topClass": "identifier",
+          "flowsWithoutScope": 0,
+          "lines": [
+            2
+          ]
+        },
+        {
+          "id": "Classroom Cloud Inc",
+          "population": "staff",
+          "people": {
+            "min": 50,
+            "max": 50,
+            "exact": true
+          },
+          "points": {
+            "min": 600,
+            "max": 600,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "identifier": {
+              "min": 50,
+              "max": 50,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "staff.email",
+            "staff.first_name",
+            "staff.id",
+            "staff.last_name"
+          ],
+          "ignoredFields": [
+            "student.class_enrollments",
+            "student.email",
+            "student.first_name",
+            "student.grade_level",
+            "student.last_name",
+            "student.sis_id"
+          ],
+          "topClass": "identifier",
+          "flowsWithoutScope": 0,
+          "lines": [
+            7
+          ]
+        }
+      ],
+      "byApp": [
+        {
+          "id": "ReadWell",
+          "population": "staff",
+          "people": {
+            "min": 77,
+            "max": 77,
+            "exact": true
+          },
+          "points": {
+            "min": 924,
+            "max": 924,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "identifier": {
+              "min": 77,
+              "max": 77,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "staff.email",
+            "staff.first_name",
+            "staff.id",
+            "staff.last_name"
+          ],
+          "ignoredFields": [
+            "student.birth_date",
+            "student.first_name",
+            "student.grade_level",
+            "student.iep_status",
+            "student.last_name",
+            "student.school",
+            "student.sis_id"
+          ],
+          "topClass": "identifier",
+          "flowsWithoutScope": 0,
+          "lines": [
+            2
+          ]
+        },
+        {
+          "id": "ClassCloud",
+          "population": "staff",
+          "people": {
+            "min": 50,
+            "max": 50,
+            "exact": true
+          },
+          "points": {
+            "min": 600,
+            "max": 600,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "identifier": {
+              "min": 50,
+              "max": 50,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "staff.email",
+            "staff.first_name",
+            "staff.id",
+            "staff.last_name"
+          ],
+          "ignoredFields": [
+            "student.class_enrollments",
+            "student.email",
+            "student.first_name",
+            "student.grade_level",
+            "student.last_name",
+            "student.sis_id"
+          ],
+          "topClass": "identifier",
+          "flowsWithoutScope": 0,
+          "lines": [
+            7
+          ]
+        }
+      ]
+    },
+    "sharedFields": [
+      {
+        "field": "student.frl_status",
+        "students": {
+          "min": 1660,
+          "max": 1660,
+          "exact": true
+        },
+        "vendors": [
+          "Acme Learning",
+          "Food Services Co"
+        ]
+      },
+      {
+        "field": "student.grade_level",
+        "students": {
+          "min": 1660,
+          "max": 1660,
+          "exact": true
+        },
+        "vendors": [
+          "Acme Learning",
+          "Classroom Cloud Inc",
+          "Food Services Co"
+        ]
+      },
+      {
+        "field": "student.school",
+        "students": {
+          "min": 1660,
+          "max": 1660,
+          "exact": true
+        },
+        "vendors": [
+          "Acme Learning",
+          "Food Services Co",
+          "Library Systems Co",
+          "Transit Apps LLC"
+        ]
+      },
+      {
+        "field": "student.first_name",
+        "students": {
+          "min": 1660,
+          "max": 1660,
+          "exact": false
+        },
+        "vendors": [
+          "Acme Learning",
+          "Classroom Cloud Inc",
+          "Family Messaging LLC",
+          "Food Services Co",
+          "Library Systems Co",
+          "QuizHub Inc",
+          "Transit Apps LLC"
+        ]
+      },
+      {
+        "field": "student.address",
+        "students": {
+          "min": 1660,
+          "max": 1660,
+          "exact": true
+        },
+        "vendors": [
+          "Acme Learning",
+          "Transit Apps LLC"
+        ]
+      },
+      {
+        "field": "student.sis_id",
+        "students": {
+          "min": 1660,
+          "max": 1660,
+          "exact": true
+        },
+        "vendors": [
+          "Acme Learning",
+          "Classroom Cloud Inc",
+          "Food Services Co",
+          "Library Systems Co",
+          "Transit Apps LLC"
+        ]
+      },
+      {
+        "field": "student.last_name",
+        "students": {
+          "min": 1660,
+          "max": 1660,
+          "exact": false
+        },
+        "vendors": [
+          "Acme Learning",
+          "Classroom Cloud Inc",
+          "Family Messaging LLC",
+          "Food Services Co",
+          "Library Systems Co",
+          "QuizHub Inc",
+          "Transit Apps LLC"
+        ]
+      },
+      {
+        "field": "student.student_number",
+        "students": {
+          "min": 1660,
+          "max": 1660,
+          "exact": true
+        },
+        "vendors": [
+          "Food Services Co"
+        ]
+      },
+      {
+        "field": "student.password",
+        "students": {
+          "min": 1660,
+          "max": 1660,
+          "exact": true
+        },
+        "vendors": [
+          "Library Systems Co"
+        ]
+      },
+      {
+        "field": "student.username",
+        "students": {
+          "min": 1660,
+          "max": 1660,
+          "exact": true
+        },
+        "vendors": [
+          "Library Systems Co"
+        ]
+      },
+      {
+        "field": "student.transportation",
+        "students": {
+          "min": 1660,
+          "max": 1660,
+          "exact": true
+        },
+        "vendors": [
+          "Transit Apps LLC"
+        ]
+      },
+      {
+        "field": "guardian.email",
+        "students": {
+          "min": 1600,
+          "max": 1600,
+          "exact": false
+        },
+        "vendors": [
+          "Family Messaging LLC"
+        ]
+      },
+      {
+        "field": "guardian.name",
+        "students": {
+          "min": 1600,
+          "max": 1600,
+          "exact": false
+        },
+        "vendors": [
+          "Family Messaging LLC"
+        ]
+      },
+      {
+        "field": "guardian.phone",
+        "students": {
+          "min": 1600,
+          "max": 1600,
+          "exact": false
+        },
+        "vendors": [
+          "Family Messaging LLC"
+        ]
+      },
+      {
+        "field": "student.home_language",
+        "students": {
+          "min": 1600,
+          "max": 1600,
+          "exact": false
+        },
+        "vendors": [
+          "Family Messaging LLC"
+        ]
+      },
+      {
+        "field": "student.birth_date",
+        "students": {
+          "min": 1140,
+          "max": 1140,
+          "exact": true
+        },
+        "vendors": [
+          "Acme Learning"
+        ]
+      },
+      {
+        "field": "student.email",
+        "students": {
+          "min": 1086,
+          "max": 1086,
+          "exact": true
+        },
+        "vendors": [
+          "Classroom Cloud Inc",
+          "QuizHub Inc"
+        ]
+      },
+      {
+        "field": "student.class_enrollments",
+        "students": {
+          "min": 970,
+          "max": 970,
+          "exact": true
+        },
+        "vendors": [
+          "Classroom Cloud Inc"
+        ]
+      },
+      {
+        "field": "student.iep_status",
+        "students": {
+          "min": 690,
+          "max": 690,
+          "exact": true
+        },
+        "vendors": [
+          "Acme Learning"
+        ]
+      }
+    ],
+    "alerts": [
+      {
+        "vendorId": "Library Systems Co",
+        "appId": "ShelfScan",
+        "channel": "sftp:Library Systems Co",
+        "lines": [
+          8
+        ],
+        "rule": "password",
+        "severity": "critical",
+        "fields": [
+          "student.password"
+        ],
+        "students": 1660,
+        "staff": 0,
+        "message": "ShelfScan receives passwords through sftp:Library Systems Co. Use single sign-on instead and stop sending Student password."
+      },
+      {
+        "vendorId": "Food Services Co",
+        "appId": "LunchLine",
+        "students": 1660,
+        "staff": 0,
+        "lines": [
+          4
+        ],
+        "rule": "contract_expired",
+        "severity": "high",
+        "contractId": "FOOD-2023",
+        "fields": [],
+        "message": "Contract FOOD-2023 with Food Services Co expired on 2026-06-30, and LunchLine still receives data about 1660 students. Renew it or stop the flow and ask for deletion."
+      },
+      {
+        "vendorId": "Family Messaging LLC",
+        "appId": "FamilyTalk",
+        "students": 1600,
+        "staff": 0,
+        "lines": [
+          6
+        ],
+        "rule": "no_contract",
+        "severity": "high",
+        "fields": [
+          "student.home_language",
+          "guardian.email",
+          "guardian.name",
+          "guardian.phone",
+          "student.first_name",
+          "student.last_name"
+        ],
+        "message": "FamilyTalk receives data about 1600 students and no data privacy agreement with Family Messaging LLC covers it."
+      },
+      {
+        "vendorId": "Acme Learning",
+        "appId": "ReadWell",
+        "channel": "clever",
+        "lines": [
+          2
+        ],
+        "rule": "unexpected_field",
+        "severity": "high",
+        "fields": [
+          "student.birth_date"
+        ],
+        "students": 690,
+        "staff": 0,
+        "message": "ReadWell receives data its category does not need: Date of birth. Stop sharing these fields in clever, or record why the app needs them."
+      },
+      {
+        "vendorId": "Acme Learning",
+        "appId": "ReadWell",
+        "students": 690,
+        "staff": 0,
+        "lines": [
+          2
+        ],
+        "rule": "contract_mismatch",
+        "severity": "high",
+        "contractId": "ACME-2025",
+        "fields": [
+          "student.iep_status"
+        ],
+        "message": "ReadWell receives Individualized Education Program (IEP) status, but the contract does not authorize Special Indicator in Exhibit B. Stop sharing these fields or amend the contract."
+      },
+      {
+        "vendorId": "Acme Learning",
+        "appId": "MathPath",
+        "channel": "sftp:Acme Learning",
+        "lines": [
+          3
+        ],
+        "rule": "unexpected_field",
+        "severity": "high",
+        "fields": [
+          "student.address",
+          "student.frl_status",
+          "student.birth_date"
+        ],
+        "students": 450,
+        "staff": 0,
+        "message": "MathPath receives data its category does not need: Student home address, Free or reduced-price lunch status, Date of birth. Stop sharing these fields in sftp:Acme Learning, or record why the app needs them."
+      },
+      {
+        "vendorId": "Acme Learning",
+        "appId": "MathPath",
+        "students": 450,
+        "staff": 0,
+        "lines": [
+          3
+        ],
+        "rule": "contract_mismatch",
+        "severity": "high",
+        "contractId": "ACME-2025",
+        "fields": [
+          "student.address",
+          "student.frl_status"
+        ],
+        "message": "MathPath receives Student home address, Free or reduced-price lunch status, but the contract does not authorize Student Contact Information, Special Indicator in Exhibit B. Stop sharing these fields or amend the contract."
+      },
+      {
+        "vendorId": "Family Messaging LLC",
+        "appId": "FamilyTalk",
+        "channel": "manual_upload:Family Messaging LLC",
+        "lines": [
+          6
+        ],
+        "rule": "review_field",
+        "severity": "info",
+        "fields": [
+          "student.home_language"
+        ],
+        "students": 1600,
+        "staff": 0,
+        "message": "FamilyTalk receives sensitive data that only some apps of its category use: Home language. Confirm that a feature in use needs it."
+      },
+      {
+        "vendorId": "Classroom Cloud Inc",
+        "appId": "ClassCloud",
+        "students": 970,
+        "staff": 0,
+        "lines": [
+          7
+        ],
+        "rule": "contract_expiring",
+        "severity": "info",
+        "contractId": "CLOUD-2024",
+        "fields": [],
+        "message": "Contract CLOUD-2024 with Classroom Cloud Inc expires on 2026-12-31, in 44 days. Plan the renewal or the end of the flow."
+      },
+      {
+        "vendorId": "Acme Learning",
+        "appId": "ReadWell",
+        "channel": "clever",
+        "lines": [
+          2
+        ],
+        "rule": "review_field",
+        "severity": "info",
+        "fields": [
+          "student.iep_status"
+        ],
+        "students": 690,
+        "staff": 0,
+        "message": "ReadWell receives sensitive data that only some apps of its category use: Individualized Education Program (IEP) status. Confirm that a feature in use needs it."
+      },
+      {
+        "vendorId": "QuizHub Inc",
+        "appId": "QuizHub",
+        "channel": "clever",
+        "lines": [
+          5
+        ],
+        "rule": "unclassified_app",
+        "severity": "info",
+        "fields": [],
+        "students": 116,
+        "staff": 0,
+        "message": "QuizHub has no category, so unnecessary data was not checked. Assign a category."
+      }
+    ],
+    "scenarios": [
+      {
+        "id": "vendor:Transit Apps LLC",
+        "kind": "vendor",
+        "vendors": [
+          "Transit Apps LLC"
+        ],
+        "apps": [
+          "RouteRider"
+        ],
+        "students": {
+          "id": "vendor:Transit Apps LLC",
+          "population": "students",
+          "people": {
+            "min": 1660,
+            "max": 1660,
+            "exact": true
+          },
+          "points": {
+            "min": 33200,
+            "max": 33200,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "identifier": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.address",
+            "student.first_name",
+            "student.last_name",
+            "student.school",
+            "student.sis_id",
+            "student.transportation"
+          ],
+          "ignoredFields": [],
+          "topClass": "location",
+          "flowsWithoutScope": 0,
+          "lines": [
+            9
+          ]
+        },
+        "staff": {
+          "id": "vendor:Transit Apps LLC",
+          "population": "staff",
+          "people": {
+            "min": 0,
+            "max": 0,
+            "exact": true
+          },
+          "points": {
+            "min": 0,
+            "max": 0,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "identifier": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [],
+          "ignoredFields": [
+            "student.address",
+            "student.first_name",
+            "student.last_name",
+            "student.school",
+            "student.sis_id",
+            "student.transportation"
+          ],
+          "topClass": null,
+          "flowsWithoutScope": 0,
+          "lines": []
+        }
+      },
+      {
+        "id": "vendor:Food Services Co",
+        "kind": "vendor",
+        "vendors": [
+          "Food Services Co"
+        ],
+        "apps": [
+          "LunchLine"
+        ],
+        "students": {
+          "id": "vendor:Food Services Co",
+          "population": "students",
+          "people": {
+            "min": 1660,
+            "max": 1660,
+            "exact": true
+          },
+          "points": {
+            "min": 31540,
+            "max": 31540,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "identifier": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.first_name",
+            "student.frl_status",
+            "student.grade_level",
+            "student.last_name",
+            "student.school",
+            "student.sis_id",
+            "student.student_number"
+          ],
+          "ignoredFields": [],
+          "topClass": "special_status",
+          "flowsWithoutScope": 0,
+          "lines": [
+            4
+          ]
+        },
+        "staff": {
+          "id": "vendor:Food Services Co",
+          "population": "staff",
+          "people": {
+            "min": 0,
+            "max": 0,
+            "exact": true
+          },
+          "points": {
+            "min": 0,
+            "max": 0,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "identifier": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [],
+          "ignoredFields": [
+            "student.first_name",
+            "student.frl_status",
+            "student.grade_level",
+            "student.last_name",
+            "student.school",
+            "student.sis_id",
+            "student.student_number"
+          ],
+          "topClass": null,
+          "flowsWithoutScope": 0,
+          "lines": []
+        }
+      },
+      {
+        "id": "vendor:Family Messaging LLC",
+        "kind": "vendor",
+        "vendors": [
+          "Family Messaging LLC"
+        ],
+        "apps": [
+          "FamilyTalk"
+        ],
+        "students": {
+          "id": "vendor:Family Messaging LLC",
+          "population": "students",
+          "people": {
+            "min": 1600,
+            "max": 1600,
+            "exact": false
+          },
+          "points": {
+            "min": 30400,
+            "max": 30400,
+            "exact": false
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            },
+            "identifier": {
+              "min": 1600,
+              "max": 1600,
+              "exact": false
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            },
+            "demographic": {
+              "min": 1600,
+              "max": 1600,
+              "exact": false
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": false
+            }
+          },
+          "fields": [
+            "guardian.email",
+            "guardian.name",
+            "guardian.phone",
+            "student.first_name",
+            "student.home_language",
+            "student.last_name"
+          ],
+          "ignoredFields": [],
+          "topClass": "demographic",
+          "flowsWithoutScope": 0,
+          "lines": [
+            6
+          ]
+        },
+        "staff": {
+          "id": "vendor:Family Messaging LLC",
+          "population": "staff",
+          "people": {
+            "min": 0,
+            "max": 0,
+            "exact": true
+          },
+          "points": {
+            "min": 0,
+            "max": 0,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "identifier": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [],
+          "ignoredFields": [
+            "guardian.email",
+            "guardian.name",
+            "guardian.phone",
+            "student.first_name",
+            "student.home_language",
+            "student.last_name"
+          ],
+          "topClass": null,
+          "flowsWithoutScope": 0,
+          "lines": []
+        }
+      },
+      {
+        "id": "vendor:Library Systems Co",
+        "kind": "vendor",
+        "vendors": [
+          "Library Systems Co"
+        ],
+        "apps": [
+          "ShelfScan"
+        ],
+        "students": {
+          "id": "vendor:Library Systems Co",
+          "population": "students",
+          "people": {
+            "min": 1660,
+            "max": 1660,
+            "exact": true
+          },
+          "points": {
+            "min": 29880,
+            "max": 29880,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "identifier": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.first_name",
+            "student.last_name",
+            "student.password",
+            "student.school",
+            "student.sis_id",
+            "student.username"
+          ],
+          "ignoredFields": [],
+          "topClass": "credential",
+          "flowsWithoutScope": 0,
+          "lines": [
+            8
+          ]
+        },
+        "staff": {
+          "id": "vendor:Library Systems Co",
+          "population": "staff",
+          "people": {
+            "min": 0,
+            "max": 0,
+            "exact": true
+          },
+          "points": {
+            "min": 0,
+            "max": 0,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "identifier": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [],
+          "ignoredFields": [
+            "student.first_name",
+            "student.last_name",
+            "student.password",
+            "student.school",
+            "student.sis_id",
+            "student.username"
+          ],
+          "topClass": null,
+          "flowsWithoutScope": 0,
+          "lines": []
+        }
+      },
+      {
+        "id": "channel:clever",
+        "kind": "channel",
+        "vendors": [
+          "Acme Learning",
+          "Classroom Cloud Inc",
+          "QuizHub Inc"
+        ],
+        "apps": [
+          "ClassCloud",
+          "QuizHub",
+          "ReadWell"
+        ],
+        "students": {
+          "id": "channel:clever",
+          "population": "students",
+          "people": {
+            "min": 1660,
+            "max": 1660,
+            "exact": true
+          },
+          "points": {
+            "min": 27728,
+            "max": 27728,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "identifier": {
+              "min": 1660,
+              "max": 1660,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 690,
+              "max": 690,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 690,
+              "max": 690,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.birth_date",
+            "student.class_enrollments",
+            "student.email",
+            "student.first_name",
+            "student.grade_level",
+            "student.iep_status",
+            "student.last_name",
+            "student.school",
+            "student.sis_id"
+          ],
+          "ignoredFields": [
+            "staff.email",
+            "staff.first_name",
+            "staff.id",
+            "staff.last_name"
+          ],
+          "topClass": "special_status",
+          "flowsWithoutScope": 0,
+          "lines": [
+            2,
+            5,
+            7
+          ]
+        },
+        "staff": {
+          "id": "channel:clever",
+          "population": "staff",
+          "people": {
+            "min": 77,
+            "max": 77,
+            "exact": true
+          },
+          "points": {
+            "min": 924,
+            "max": 924,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "identifier": {
+              "min": 77,
+              "max": 77,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "staff.email",
+            "staff.first_name",
+            "staff.id",
+            "staff.last_name"
+          ],
+          "ignoredFields": [
+            "student.birth_date",
+            "student.class_enrollments",
+            "student.email",
+            "student.first_name",
+            "student.grade_level",
+            "student.iep_status",
+            "student.last_name",
+            "student.school",
+            "student.sis_id"
+          ],
+          "topClass": "identifier",
+          "flowsWithoutScope": 0,
+          "lines": [
+            2,
+            7
+          ]
+        }
+      },
+      {
+        "id": "vendor:Acme Learning",
+        "kind": "vendor",
+        "vendors": [
+          "Acme Learning"
+        ],
+        "apps": [
+          "MathPath",
+          "ReadWell"
+        ],
+        "students": {
+          "id": "vendor:Acme Learning",
+          "population": "students",
+          "people": {
+            "min": 1140,
+            "max": 1140,
+            "exact": true
+          },
+          "points": {
+            "min": 25050,
+            "max": 25050,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 1140,
+              "max": 1140,
+              "exact": true
+            },
+            "identifier": {
+              "min": 1140,
+              "max": 1140,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 1140,
+              "max": 1140,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 1140,
+              "max": 1140,
+              "exact": true
+            },
+            "location": {
+              "min": 450,
+              "max": 450,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.address",
+            "student.birth_date",
+            "student.first_name",
+            "student.frl_status",
+            "student.grade_level",
+            "student.iep_status",
+            "student.last_name",
+            "student.school",
+            "student.sis_id"
+          ],
+          "ignoredFields": [
+            "staff.email",
+            "staff.first_name",
+            "staff.id",
+            "staff.last_name"
+          ],
+          "topClass": "special_status",
+          "flowsWithoutScope": 0,
+          "lines": [
+            2,
+            3
+          ]
+        },
+        "staff": {
+          "id": "vendor:Acme Learning",
+          "population": "staff",
+          "people": {
+            "min": 77,
+            "max": 77,
+            "exact": true
+          },
+          "points": {
+            "min": 924,
+            "max": 924,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "identifier": {
+              "min": 77,
+              "max": 77,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "staff.email",
+            "staff.first_name",
+            "staff.id",
+            "staff.last_name"
+          ],
+          "ignoredFields": [
+            "student.address",
+            "student.birth_date",
+            "student.first_name",
+            "student.frl_status",
+            "student.grade_level",
+            "student.iep_status",
+            "student.last_name",
+            "student.school",
+            "student.sis_id"
+          ],
+          "topClass": "identifier",
+          "flowsWithoutScope": 0,
+          "lines": [
+            2
+          ]
+        }
+      },
+      {
+        "id": "vendor:Classroom Cloud Inc",
+        "kind": "vendor",
+        "vendors": [
+          "Classroom Cloud Inc"
+        ],
+        "apps": [
+          "ClassCloud"
+        ],
+        "students": {
+          "id": "vendor:Classroom Cloud Inc",
+          "population": "students",
+          "people": {
+            "min": 970,
+            "max": 970,
+            "exact": true
+          },
+          "points": {
+            "min": 13580,
+            "max": 13580,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 970,
+              "max": 970,
+              "exact": true
+            },
+            "identifier": {
+              "min": 970,
+              "max": 970,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.class_enrollments",
+            "student.email",
+            "student.first_name",
+            "student.grade_level",
+            "student.last_name",
+            "student.sis_id"
+          ],
+          "ignoredFields": [
+            "staff.email",
+            "staff.first_name",
+            "staff.id",
+            "staff.last_name"
+          ],
+          "topClass": "identifier",
+          "flowsWithoutScope": 0,
+          "lines": [
+            7
+          ]
+        },
+        "staff": {
+          "id": "vendor:Classroom Cloud Inc",
+          "population": "staff",
+          "people": {
+            "min": 50,
+            "max": 50,
+            "exact": true
+          },
+          "points": {
+            "min": 600,
+            "max": 600,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "identifier": {
+              "min": 50,
+              "max": 50,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "staff.email",
+            "staff.first_name",
+            "staff.id",
+            "staff.last_name"
+          ],
+          "ignoredFields": [
+            "student.class_enrollments",
+            "student.email",
+            "student.first_name",
+            "student.grade_level",
+            "student.last_name",
+            "student.sis_id"
+          ],
+          "topClass": "identifier",
+          "flowsWithoutScope": 0,
+          "lines": [
+            7
+          ]
+        }
+      },
+      {
+        "id": "channel:sftp:Acme Learning",
+        "kind": "channel",
+        "vendors": [
+          "Acme Learning"
+        ],
+        "apps": [
+          "MathPath"
+        ],
+        "students": {
+          "id": "channel:sftp:Acme Learning",
+          "population": "students",
+          "people": {
+            "min": 450,
+            "max": 450,
+            "exact": true
+          },
+          "points": {
+            "min": 11250,
+            "max": 11250,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 450,
+              "max": 450,
+              "exact": true
+            },
+            "identifier": {
+              "min": 450,
+              "max": 450,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 450,
+              "max": 450,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 450,
+              "max": 450,
+              "exact": true
+            },
+            "location": {
+              "min": 450,
+              "max": 450,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.address",
+            "student.birth_date",
+            "student.first_name",
+            "student.frl_status",
+            "student.grade_level",
+            "student.last_name",
+            "student.school",
+            "student.sis_id"
+          ],
+          "ignoredFields": [],
+          "topClass": "special_status",
+          "flowsWithoutScope": 0,
+          "lines": [
+            3
+          ]
+        },
+        "staff": {
+          "id": "channel:sftp:Acme Learning",
+          "population": "staff",
+          "people": {
+            "min": 0,
+            "max": 0,
+            "exact": true
+          },
+          "points": {
+            "min": 0,
+            "max": 0,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "identifier": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [],
+          "ignoredFields": [
+            "student.address",
+            "student.birth_date",
+            "student.first_name",
+            "student.frl_status",
+            "student.grade_level",
+            "student.last_name",
+            "student.school",
+            "student.sis_id"
+          ],
+          "topClass": null,
+          "flowsWithoutScope": 0,
+          "lines": []
+        }
+      },
+      {
+        "id": "vendor:QuizHub Inc",
+        "kind": "vendor",
+        "vendors": [
+          "QuizHub Inc"
+        ],
+        "apps": [
+          "QuizHub"
+        ],
+        "students": {
+          "id": "vendor:QuizHub Inc",
+          "population": "students",
+          "people": {
+            "min": 116,
+            "max": 116,
+            "exact": true
+          },
+          "points": {
+            "min": 1044,
+            "max": 1044,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "identifier": {
+              "min": 116,
+              "max": 116,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [
+            "student.email",
+            "student.first_name",
+            "student.last_name"
+          ],
+          "ignoredFields": [],
+          "topClass": "identifier",
+          "flowsWithoutScope": 0,
+          "lines": [
+            5
+          ]
+        },
+        "staff": {
+          "id": "vendor:QuizHub Inc",
+          "population": "staff",
+          "people": {
+            "min": 0,
+            "max": 0,
+            "exact": true
+          },
+          "points": {
+            "min": 0,
+            "max": 0,
+            "exact": true
+          },
+          "peopleByClass": {
+            "organizational": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "identifier": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "academic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "birth": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "demographic": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "behavioral": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "credential": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "special_status": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            },
+            "location": {
+              "min": 0,
+              "max": 0,
+              "exact": true
+            }
+          },
+          "fields": [],
+          "ignoredFields": [
+            "student.email",
+            "student.first_name",
+            "student.last_name"
+          ],
+          "topClass": null,
+          "flowsWithoutScope": 0,
+          "lines": []
+        }
+      }
+    ],
+    "contracts": [
+      {
+        "id": "ACME-2025",
+        "vendorId": "Acme Learning",
+        "exhibitB": [
+          "Student Name",
+          "Student Identifiers",
+          "Enrollment",
+          "Student In App Performance"
+        ],
+        "fields": [
+          "student.birth_date"
+        ],
+        "expiresOn": "2027-06-30",
+        "deletionDays": 60,
+        "agreement": "ndpa",
+        "line": 2
+      },
+      {
+        "id": "FOOD-2023",
+        "vendorId": "Food Services Co",
+        "appIds": [
+          "LunchLine"
+        ],
+        "exhibitB": [
+          "Student Name",
+          "Student Identifiers",
+          "Enrollment",
+          "Special Indicator"
+        ],
+        "expiresOn": "2026-06-30",
+        "deletionDays": 30,
+        "agreement": "state_dpa",
+        "line": 3
+      },
+      {
+        "id": "QUIZ-TOS",
+        "vendorId": "QuizHub Inc",
+        "appIds": [
+          "QuizHub"
+        ],
+        "agreement": "vendor_terms",
+        "line": 4
+      },
+      {
+        "id": "CLOUD-2024",
+        "vendorId": "Classroom Cloud Inc",
+        "exhibitB": [
+          "Student Name",
+          "Student Identifiers",
+          "Enrollment",
+          "Schedule",
+          "Student Contact Information",
+          "Student Work"
+        ],
+        "expiresOn": "2026-12-31",
+        "deletionDays": 60,
+        "agreement": "ndpa",
+        "line": 5
+      },
+      {
+        "id": "SHELF-2025",
+        "vendorId": "Library Systems Co",
+        "exhibitB": [
+          "Student Name",
+          "Student Identifiers",
+          "Enrollment"
+        ],
+        "expiresOn": "2028-06-30",
+        "deletionDays": 30,
+        "agreement": "ndpa",
+        "line": 6
+      },
+      {
+        "id": "inventory line 9",
+        "vendorId": "Transit Apps LLC",
+        "appIds": [
+          "RouteRider"
+        ],
+        "expiresOn": "2027-08-15",
+        "deletionDays": 90,
+        "line": 9
+      }
+    ],
+    "declarations": [
+      {
+        "vendorId": "Acme Learning",
+        "exhibitB": [
+          "Student Name",
+          "Student Identifiers",
+          "Enrollment",
+          "Demographics"
+        ],
+        "publishedOn": "2026-08-15",
+        "source": "https://www.synthetic-usd.example/privacy",
+        "line": 2
+      },
+      {
+        "vendorId": "Food Services Co",
+        "appIds": [
+          "LunchLine"
+        ],
+        "exhibitB": [
+          "Student Name",
+          "Student Identifiers",
+          "Enrollment",
+          "Special Indicator"
+        ],
+        "publishedOn": "2026-08-15",
+        "source": "https://www.synthetic-usd.example/privacy",
+        "line": 3
+      },
+      {
+        "vendorId": "Classroom Cloud Inc",
+        "exhibitB": [
+          "Student Name",
+          "Student Identifiers",
+          "Enrollment",
+          "Schedule",
+          "Student Contact Information"
+        ],
+        "publishedOn": "2026-08-15",
+        "source": "https://www.synthetic-usd.example/privacy",
+        "line": 4
+      },
+      {
+        "vendorId": "Library Systems Co",
+        "exhibitB": [
+          "Student Name",
+          "Student Identifiers",
+          "Enrollment"
+        ],
+        "publishedOn": "2026-08-15",
+        "source": "https://www.synthetic-usd.example/privacy",
+        "line": 5
+      },
+      {
+        "vendorId": "Transit Apps LLC",
+        "exhibitB": [
+          "Student Name",
+          "Student Identifiers",
+          "Enrollment"
+        ],
+        "fields": [
+          "student.transportation"
+        ],
+        "publishedOn": "2026-08-15",
+        "source": "https://www.synthetic-usd.example/privacy",
+        "line": 6
+      },
+      {
+        "vendorId": "OldReader Co",
+        "exhibitB": [
+          "Student Name",
+          "Student Identifiers"
+        ],
+        "publishedOn": "2026-08-15",
+        "source": "https://www.synthetic-usd.example/privacy",
+        "line": 7
+      }
+    ],
+    "disclosure": {
+      "vendorsReceiving": 7,
+      "vendorsDisclosed": 5,
+      "notCompared": [],
+      "findings": [
+        {
+          "kind": "undisclosed_vendor",
+          "severity": "high",
+          "vendorId": "Family Messaging LLC",
+          "apps": [
+            "FamilyTalk"
+          ],
+          "fields": [
+            "student.home_language",
+            "guardian.email",
+            "guardian.name",
+            "guardian.phone",
+            "student.first_name",
+            "student.last_name"
+          ],
+          "categories": [
+            "Demographics",
+            "Parent/Guardian Contact Information",
+            "Parent/Guardian Name",
+            "Student Name"
+          ],
+          "students": {
+            "min": 1600,
+            "max": 1600,
+            "exact": false
+          },
+          "lines": [],
+          "inventoryLines": [
+            6
+          ],
+          "message": "Family Messaging LLC receives data about 1,600 students (Home language, Guardian email, Guardian name, Guardian phone, Student first name, Student last name), but the district's published list does not name it. Add it to the publication, or stop the flow."
+        },
+        {
+          "kind": "undisclosed_vendor",
+          "severity": "high",
+          "vendorId": "QuizHub Inc",
+          "apps": [
+            "QuizHub"
+          ],
+          "fields": [
+            "student.email",
+            "student.first_name",
+            "student.last_name"
+          ],
+          "categories": [
+            "Student Contact Information",
+            "Student Name"
+          ],
+          "students": {
+            "min": 116,
+            "max": 116,
+            "exact": true
+          },
+          "lines": [],
+          "inventoryLines": [
+            5
+          ],
+          "message": "QuizHub Inc receives data about 116 students (Student email, Student first name, Student last name), but the district's published list does not name it. Add it to the publication, or stop the flow."
+        },
+        {
+          "kind": "undisclosed_data",
+          "severity": "high",
+          "vendorId": "Transit Apps LLC",
+          "apps": [
+            "RouteRider"
+          ],
+          "fields": [
+            "student.address"
+          ],
+          "categories": [
+            "Student Contact Information"
+          ],
+          "students": {
+            "min": 1660,
+            "max": 1660,
+            "exact": true
+          },
+          "lines": [
+            6
+          ],
+          "inventoryLines": [
+            9
+          ],
+          "message": "RouteRider receives Student home address for 1,660 students, but the published list for Transit Apps LLC does not include Student Contact Information. Update the publication, or stop sharing these fields."
+        },
+        {
+          "kind": "undisclosed_data",
+          "severity": "high",
+          "vendorId": "Acme Learning",
+          "apps": [
+            "ReadWell"
+          ],
+          "fields": [
+            "student.iep_status"
+          ],
+          "categories": [
+            "Special Indicator"
+          ],
+          "students": {
+            "min": 690,
+            "max": 690,
+            "exact": true
+          },
+          "lines": [
+            2
+          ],
+          "inventoryLines": [
+            2
+          ],
+          "message": "ReadWell receives Individualized Education Program (IEP) status for 690 students, but the published list for Acme Learning does not include Special Indicator. Update the publication, or stop sharing these fields."
+        },
+        {
+          "kind": "undisclosed_data",
+          "severity": "high",
+          "vendorId": "Acme Learning",
+          "apps": [
+            "MathPath"
+          ],
+          "fields": [
+            "student.address",
+            "student.frl_status"
+          ],
+          "categories": [
+            "Special Indicator",
+            "Student Contact Information"
+          ],
+          "students": {
+            "min": 450,
+            "max": 450,
+            "exact": true
+          },
+          "lines": [
+            2
+          ],
+          "inventoryLines": [
+            3
+          ],
+          "message": "MathPath receives Student home address, Free or reduced-price lunch status for 450 students, but the published list for Acme Learning does not include Special Indicator, Student Contact Information. Update the publication, or stop sharing these fields."
+        },
+        {
+          "kind": "no_longer_receives",
+          "severity": "info",
+          "vendorId": "OldReader Co",
+          "apps": [],
+          "fields": [],
+          "categories": [],
+          "students": {
+            "min": 0,
+            "max": 0,
+            "exact": true
+          },
+          "lines": [
+            7
+          ],
+          "inventoryLines": [],
+          "message": "The published list names OldReader Co, but the inventory shows no student data flowing to it. If it no longer receives data, remove it from the publication and confirm the data was deleted."
+        }
+      ]
+    },
+    "issues": [
+      {
+        "severity": "warning",
+        "line": 4,
+        "column": "exhibit_b",
+        "message": "No Exhibit B categories or fields recorded: dates are checked, but fields are not compared with this contract.",
+        "file": "contracts"
+      },
+      {
+        "severity": "warning",
+        "file": "exports/mathpath_students.csv",
+        "line": 1,
+        "message": "Columns not recognized, so not counted: Locker. List their fields in the inventory instead, or ask for them to be added to the catalog."
+      }
+    ]
+  }
+}

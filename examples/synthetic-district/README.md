@@ -12,6 +12,8 @@ A complete fictional district for trying RosterRadius, testing it and demonstrat
 | `inventory.csv` | The app inventory: 8 apps from 7 vendors. |
 | `contracts.csv` | 5 data privacy agreements. |
 | `declared.csv` | What the district published on its privacy page. It leaves out two vendors and some data on purpose, and still lists a vendor that no longer receives data. |
+| `results/report.json` | The district report RosterRadius produces from these files, as a [saved document](../../docs/formats/report.md). |
+| `results/incident-acme-il.json` | The incident report for a breach at Acme Learning, notified on 2026-12-15, under Illinois law. |
 
 OneRoster `sourcedId` values (`or-u-00001`) differ from the district's own student IDs (`100001`), which Clever and the SFTP export use, as often happens in real exports.
 

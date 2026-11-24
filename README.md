@@ -38,9 +38,10 @@ How fields are classified, how exposure is calculated and which rules raise aler
 ```
 packages/
   core/         the exposure engine (in progress)
+  web/          the local page, where a district loads its files (in progress)
 docs/
   adr/          architecture decision records
-  formats/      input file formats and the table of accepted fields
+  formats/      input file formats, the table of accepted fields and the saved results format
   methodology/  limitations, federal legal basis and state law table
 examples/
   synthetic-district/  a complete fictional district for trying the tool
@@ -55,7 +56,11 @@ Requires Node.js 22 or later (every Node.js line with upstream support is tested
 npm install
 npm test
 npm run typecheck
+npm run dev      # the local page, at the address Vite prints
+npm run build    # the local page as a static site, in packages/web/dist
 ```
+
+The page is built with React, Vite and TypeScript, and the engine runs in a Web Worker ([ADR 0002](docs/adr/0002-local-page-react-vite.md)).
 
 Never commit real district or student data. Use synthetic data for tests and examples; the `private/` folder is git-ignored for local inputs.
 
